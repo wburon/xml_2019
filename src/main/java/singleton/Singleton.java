@@ -15,7 +15,6 @@ public class Singleton {
 	
 	private String url = "localhost";
 	private static String database = "notre_database";
-	private int port = 0;
 	private static MongoClient mongoClient;
 	private static MongoDatabase mongoDatabase;
 	
