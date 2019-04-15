@@ -7,6 +7,17 @@ public class Adresse {
 	private String voie;
 	private int code_postal;
 	private String ville;
+	
+	public Adresse(int id, int numero, String voie, int code_postal, String ville) {
+		this.id = id;
+		this.numero = numero;
+		this.voie = voie;
+		this.code_postal = code_postal;
+		this.ville = ville;
+	}
+	public Adresse() {
+		// TODO Auto-generated constructor stub
+	}
 	public int getId() {
 		return id;
 	}
