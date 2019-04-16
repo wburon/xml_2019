@@ -11,6 +11,20 @@ public class Etablissement {
 	private List<Etudiant> etudiants;
 	private List<String> diplomes;
 	private List<Formation> formations;
+	
+	public Etablissement(int id, String nom, String type, Adresse adresse, List<Etudiant> etudiants,
+			List<String> diplomes, List<Formation> formations) {
+		this.id = id;
+		this.nom = nom;
+		this.type = type;
+		this.adresse = adresse;
+		this.etudiants = etudiants;
+		this.diplomes = diplomes;
+		this.formations = formations;
+	}
+	public Etablissement() {
+		// TODO Auto-generated constructor stub
+	}
 	public int getId() {
 		return id;
 	}

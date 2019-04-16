@@ -9,6 +9,15 @@ public class Universite {
 	private int nb_facultes;
 	private int nb_etudiants;
 	private List<Etablissement> etablissements;
+	public Universite(){
+	}
+	public Universite(int id, String nom, int nb_facultes, int nb_etudiants, List<Etablissement> etablissements) {
+		this.id = id;
+		this.nom = nom;
+		this.nb_facultes = nb_facultes;
+		this.nb_etudiants = nb_etudiants;
+		this.etablissements = etablissements;
+	}
 	public int getId() {
 		return id;
 	}

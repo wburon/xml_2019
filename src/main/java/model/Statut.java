@@ -2,6 +2,13 @@ package model;
 
 public enum Statut {
 	
-	présent,absent;
+	present,absent;
+	
+	public String getName(){
+		if(this == Statut.present)
+			return "present";
+		else
+			return "absent";
+	}
 
 }

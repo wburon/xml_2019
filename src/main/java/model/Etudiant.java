@@ -8,6 +8,18 @@ public class Etudiant {
 	private Adresse adresse;
 	private Formation formation;
 	private Statut statut;
+	
+	public Etudiant(int id, String nom, String prenom, Adresse adresse, Formation formation, Statut statut) {
+		this.id = id;
+		this.nom = nom;
+		this.prenom = prenom;
+		this.adresse = adresse;
+		this.formation = formation;
+		this.statut = statut;
+	}
+	public Etudiant() {
+		// TODO Auto-generated constructor stub
+	}
 	public int getId() {
 		return id;
 	}

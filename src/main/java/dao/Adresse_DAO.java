@@ -28,16 +28,16 @@ public class Adresse_DAO extends DAO<Adresse> {
 	}
 
 	@Override
-	public boolean create(Adresse obj) {
+	public int create(Adresse obj) {
 		try {
 			Document document = new Document("id", maxId()).append("numero", obj.getNumero())
 					.append("voie", obj.getVoie()).append("code postal", obj.getCode_postal())
 					.append("ville", obj.getVille());
 			this.collection.insertOne(document);
 			System.out.println("Adresse insert succefully !");
-			return true;
+			return document.getInteger("id");
 		} catch (Exception e) {
-			return false;
+			return 0;
 		}
 	}
 

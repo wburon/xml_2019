@@ -7,6 +7,15 @@ public class Formation {
 	private int id;
 	private String intitule;
 	private List<String> disciplines;
+	
+	public Formation(int id, String intitule, List<String> disciplines) {
+		this.id = id;
+		this.intitule = intitule;
+		this.disciplines = disciplines;
+	}
+	public Formation() {
+		// TODO Auto-generated constructor stub
+	}
 	public int getId() {
 		return id;
 	}
