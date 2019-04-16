@@ -25,11 +25,7 @@ public class etudiant {
 		adresse.setVille("angers");
 		etudiant.setAdresse(adresse);
 		Formation formation = new Formation();
-		formation.setIntitule("MIA");
-		List<String> disciplines = new ArrayList<>();
-		disciplines.add("info");
-		disciplines.add("opti");
-		formation.setDisciplines(disciplines);
+		formation.setId(1);
 		etudiant.setFormation(formation);
 		etudiant.setStatut(Statut.present);
 		DAO etudiantDAO = DAOFactory.getEtudiantDAO();

@@ -36,11 +36,10 @@ public class Etudiant_DAO extends DAO<Etudiant>{
 	public int create(Etudiant obj) {
 		try {
 			int idAdresse = adresse.create(obj.getAdresse());
-			int idFormation = formation.create(obj.getFormation());
 			Document document = new Document("id", maxId())
 					.append("nom", obj.getNom())
 					.append("prenom", obj.getPrenom()).append("adresse", idAdresse)
-					.append("formation", idFormation)
+					.append("formation", obj.getFormation().getId())
 					.append("statut", obj.getStatut().getName())
 					;
 			this.collection.insertOne(document);

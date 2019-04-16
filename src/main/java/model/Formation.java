@@ -34,5 +34,7 @@ public class Formation {
 	public void setDisciplines(List<String> disciplines) {
 		this.disciplines = disciplines;
 	}
-
+	public String toString(){
+		return "" + this.id + " " + this.intitule;
+	}
 }

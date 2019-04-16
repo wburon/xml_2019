@@ -48,5 +48,8 @@ public class Universite {
 	public void setEtablissements(List<Etablissement> etablissements) {
 		this.etablissements = etablissements;
 	}
+	public void addOneStudent() {
+		this.nb_etudiants++;	
+	}
 
 }

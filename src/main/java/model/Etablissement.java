@@ -67,5 +67,7 @@ public class Etablissement {
 	public void setFormations(List<Formation> formations) {
 		this.formations = formations;
 	}
-
+	public String toString(){
+		return "" + this.id + " " + this.nom + " " + this.type;
+	}
 }
