@@ -118,12 +118,13 @@ public class Universite_DAO extends DAO<Universite>{
 	@Override
 	public void printAll(){
 		FindIterable<Document> iterDoc = collection.find();
-		int i = 1;
-		
-		Iterator it = iterDoc.iterator();
-		while(it.hasNext()){
-			System.out.println(it.next());
-			i++;
+		printDocumentUniv(iterDoc);
+
+	}
+
+	private void printDocumentUniv(FindIterable<Document> iterDoc) {
+		for(Document doc : iterDoc){
+			System.out.println(""+doc.getInteger("id")+" "+doc.getString("nom"));
 		}
 	}
 

@@ -251,9 +251,18 @@ public class Main {
 				disciplines.add(disci.getTextContent());
 			}
 			f.setDisciplines(disciplines);
-			listFormations.add(f);
+			boolean c = containsID(listFormations,f.getId());
+			if(!c)
+				listFormations.add(f);
 		}
 		return listFormations;
+	}
+
+	private static boolean containsID(List<Formation> listFormations, int id) {
+		for(Formation f : listFormations)
+			if(f.getId() == id)
+				return true;
+		return false;
 	}
 
 	private static List<String> getDiplomes(String tag, Element element) {
