@@ -22,5 +22,12 @@ public enum Statut {
 		else
 			return Statut.absent;
 	}
+	
+	public static Statut getStautByName(String name){
+		if(name.equals("present"))
+			return Statut.present;
+		else
+			return Statut.absent;
+	}
 
 }

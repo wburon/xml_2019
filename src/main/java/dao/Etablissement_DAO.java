@@ -38,19 +38,35 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 	@Override
 	public int create(Etablissement obj) {
 		try {
-			int idAdresse = adresse.create(obj.getAdresse());
-			List<Integer> idEtudiants = new ArrayList<>();
-			for(Etudiant e : obj.getEtudiants())
-				idEtudiants.add(e.getId());
-			List<Integer> idFormations = new ArrayList<>();
-			for(Formation f : obj.getFormations())
-				idFormations.add(f.getId());
-			Document document = new Document("id", maxId()).append("nom", obj.getNom())
-					.append("type", obj.getType()).append("adresse", idAdresse)
-					.append("etudiants", idEtudiants)
-					.append("diplomes", obj.getDiplomes())
-					.append("formations", idFormations)
-					;
+			Document document;
+			if(obj.getId() != 0){
+				List<Integer> idEtudiants = new ArrayList<>();
+				for(Etudiant e : obj.getEtudiants())
+					idEtudiants.add(e.getId());
+				List<Integer> idFormations = new ArrayList<>();
+				for(Formation f : obj.getFormations())
+					idFormations.add(f.getId());
+				document = new Document("id", obj.getId()).append("nom", obj.getNom())
+						.append("type", obj.getType()).append("adresse", obj.getAdresse().getId())
+						.append("etudiants", idEtudiants)
+						.append("diplomes", obj.getDiplomes())
+						.append("formations", idFormations)
+						;
+			}else{
+				int idAdresse = adresse.create(obj.getAdresse());
+				List<Integer> idEtudiants = new ArrayList<>();
+				for(Etudiant e : obj.getEtudiants())
+					idEtudiants.add(e.getId());
+				List<Integer> idFormations = new ArrayList<>();
+				for(Formation f : obj.getFormations())
+					idFormations.add(f.getId());
+				document = new Document("id", maxId()).append("nom", obj.getNom())
+						.append("type", obj.getType()).append("adresse", idAdresse)
+						.append("etudiants", idEtudiants)
+						.append("diplomes", obj.getDiplomes())
+						.append("formations", idFormations)
+						;
+			}
 			this.collection.insertOne(document);
 			System.out.println("etablissement insert succefully !");
 			return document.getInteger("id");

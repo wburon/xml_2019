@@ -31,8 +31,15 @@ public class Formation_DAO extends DAO<Formation>{
 	@Override
 	public int create(Formation obj) {
 		try {
-			Document document = new Document("id", maxId()).append("intitule", obj.getIntitule())
-					.append("disciplines", obj.getDisciplines());
+			Document document;
+			if(obj.getId() != 0){
+				document = new Document("id", obj.getId()).append("intitule", obj.getIntitule())
+						.append("disciplines", obj.getDisciplines());
+			}else{
+				document = new Document("id", maxId()).append("intitule", obj.getIntitule())
+						.append("disciplines", obj.getDisciplines());
+			}
+			
 			this.collection.insertOne(document);
 			System.out.println("Formation insert succefully !");
 			return document.getInteger("id");

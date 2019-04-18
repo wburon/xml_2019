@@ -34,14 +34,30 @@ public class Universite_DAO extends DAO<Universite>{
 	@Override
 	public int create(Universite obj) {
 		try {
-			List<Integer> idEtablissements = new ArrayList<>();
-			for(Etablissement e : obj.getEtablissements())
-				idEtablissements.add(e.getId());
-			//int id, String nom, int nb_facultes, int nb_etudiants, List<Etablissement> etablissements
-			Document document = new Document("id", maxId()).append("nom", obj.getNom())
-					.append("nb_facultes", obj.getNb_facultes()).append("nb_etudiants", obj.getNb_etudiants())
-					.append("etudiants", idEtablissements)
-					;
+			Document document;
+			if(obj.getId() != 0){
+				List<Integer> idEtablissements = new ArrayList<>();
+				for(Etablissement e : obj.getEtablissements())
+					idEtablissements.add(e.getId());
+				//int id, String nom, int nb_facultes, int nb_etudiants, List<Etablissement> etablissements
+				document = new Document("id", obj.getId())
+						.append("nom", obj.getNom())
+						.append("nb_facultes", obj.getNb_facultes())
+						.append("nb_etudiants", obj.getNb_etudiants())
+						.append("etablissements", idEtablissements)
+						;
+			}else{
+				List<Integer> idEtablissements = new ArrayList<>();
+				for(Etablissement e : obj.getEtablissements())
+					idEtablissements.add(e.getId());
+				//int id, String nom, int nb_facultes, int nb_etudiants, List<Etablissement> etablissements
+				document = new Document("id", maxId())
+						.append("nom", obj.getNom())
+						.append("nb_facultes", obj.getNb_facultes())
+						.append("nb_etudiants", obj.getNb_etudiants())
+						.append("etablissements", idEtablissements)
+						;
+			}
 			this.collection.insertOne(document);
 			System.out.println("Universite insert succefully !");
 			return document.getInteger("id");

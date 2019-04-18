@@ -35,13 +35,24 @@ public class Etudiant_DAO extends DAO<Etudiant>{
 	@Override
 	public int create(Etudiant obj) {
 		try {
-			int idAdresse = adresse.create(obj.getAdresse());
-			Document document = new Document("id", maxId())
-					.append("nom", obj.getNom())
-					.append("prenom", obj.getPrenom()).append("adresse", idAdresse)
-					.append("formation", obj.getFormation().getId())
-					.append("statut", obj.getStatut().getName())
-					;
+			Document document;
+			if(obj.getId() != 0){
+				document = new Document("id", obj.getId())
+						.append("nom", obj.getNom())
+						.append("prenom", obj.getPrenom()).append("adresse", obj.getAdresse().getId())
+						.append("formation", obj.getFormation().getId())
+						.append("statut", obj.getStatut().getName())
+						;
+			}else{
+				int idAdresse = adresse.create(obj.getAdresse());
+				document = new Document("id", maxId())
+						.append("nom", obj.getNom())
+						.append("prenom", obj.getPrenom()).append("adresse", idAdresse)
+						.append("formation", obj.getFormation().getId())
+						.append("statut", obj.getStatut().getName())
+						;
+			}
+			
 			this.collection.insertOne(document);
 			System.out.println("Etudiant insert succefully !");
 			return document.getInteger("id");
