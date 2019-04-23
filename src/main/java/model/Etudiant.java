@@ -56,5 +56,7 @@ public class Etudiant {
 	public void setStatut(Statut statut) {
 		this.statut = statut;
 	}
-
+	public String toString(){
+		return ""+ this.id + " " + this.nom + " " + this.prenom + " " + this.adresse.toString() + " " + this.formation.toString() + " " + this.statut;
+	}
 }

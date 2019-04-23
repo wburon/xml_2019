@@ -29,5 +29,12 @@ public enum Statut {
 		else
 			return Statut.absent;
 	}
+	
+	public static Statut getOpposite(Statut s){
+		if(s.equals(Statut.present))
+			return Statut.absent;
+		else
+			return Statut.present;
+	}
 
 }

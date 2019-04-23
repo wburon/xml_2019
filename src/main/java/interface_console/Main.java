@@ -30,7 +30,6 @@ public class Main {
 	private static DAO universiteDAO = DAOFactory.getUniversiteDAO();
 	private static DAO etablissementDAO = DAOFactory.getEtablissementDAO();
 	private static DAO formationDAO = DAOFactory.getFormationDAO();
-	private static DAO etudiantDAO = DAOFactory.getEtudiantDAO();
 	private static DAO adresseDAO = DAOFactory.getAdresseDAO();
 
 	public static void main(String[] args) {
@@ -59,10 +58,10 @@ public class Main {
 						ajoutEtudiant(clavier);
 						break;
 					case 2:
-						// TODO : modifier un étudiant
+						modifyEtudiant(clavier);
 						break;
 					case 3:
-						// TODO : rechercher un étudiant
+						findEtudiant(clavier);
 						break;
 					case 4:
 						break;
@@ -157,6 +156,101 @@ public class Main {
 
 	}
 
+	private static void findEtudiant(Scanner clavier) {
+		int choix;
+		do{
+		System.out.println("FONCTION RECHERCHE ETUDIANT :");
+		System.out.println("1- by ID");
+		System.out.println("2- by name");
+		System.out.println("3- by location");
+		System.out.println("4- by statut");
+		System.out.println("5- Annuler");
+		choix = clavier.nextInt();
+		switch(choix){
+		case 1:
+			System.out.print("ID : ");
+			System.out.println(DAOFactory.getEtudiantDAO().find(clavier.nextInt()).toString());
+			break;
+		case 2:
+			System.out.print("Nom : ");
+			String nom = clavier.next();
+			System.out.print("Prénom : ");
+			String prenom = clavier.next();
+			for(Etudiant e : DAOFactory.getEtudiantDAO().findByName(nom,prenom)){
+				e.toString();
+			}
+			break;
+		case 3:
+			System.out.print("ville : ");
+			String ville = clavier.nextLine();
+			System.out.print("code postal : ");
+			int code = clavier.nextInt();
+			System.out.print("voie : ");
+			String voie = clavier.nextLine();
+			for(Etudiant e : DAOFactory.getEtudiantDAO().findByLocation(ville,code,voie)){
+				e.toString();
+			}
+			break;
+		case 4:
+			System.out.print("statut : ");
+			for(Etudiant e : DAOFactory.getEtudiantDAO().findByStatut(clavier.next())){
+				e.toString();
+			}
+			break;
+		case 5:
+			System.out.println("Merci d'avoir utilisé la fonction recherche étudiant !");
+		default:
+		}
+		}while(choix != 6);
+	}
+
+	private static void modifyEtudiant(Scanner clavier) {
+		int choix;
+		System.out.print("ID : ");
+		int id = clavier.nextInt();
+		do{
+		System.out.println("Voici les informations que nous avons à ce jour : ");
+		Etudiant e = (Etudiant) DAOFactory.getEtudiantDAO().find(id);
+		System.out.println(e.toString());
+		System.out.println("Que souhaitez-vous modifier ?");
+		System.out.println("1- Nom/Prénom");
+		System.out.println("2- Adresse");
+		System.out.println("3- Statut");
+		System.out.println("4- Annuler");
+		choix = clavier.nextInt();
+		switch(choix){
+		case 1:
+			System.out.print("Nom : ");
+			e.setNom(clavier.next());
+			System.out.print("Prénom : ");
+			e.setPrenom(clavier.next());
+			DAOFactory.getEtudiantDAO().update(e);
+			break;
+		case 2:
+			Adresse adresse = e.getAdresse();
+			System.out.print("Adresse, numero : ");
+			adresse.setNumero(clavier.nextInt());
+			System.out.print("voie : ");
+			adresse.setVoie(clavier.nextLine());
+			System.out.print("code postal : ");
+			adresse.setCode_postal(clavier.nextInt());
+			System.out.print("ville : ");
+			adresse.setVille(clavier.nextLine());
+			e.setAdresse(adresse);
+			DAOFactory.getEtudiantDAO().update(e);
+			break;
+		case 3:
+			e.setStatut(Statut.getOpposite(e.getStatut()));
+			DAOFactory.getEtudiantDAO().update(e);
+			break;
+		case 4:
+			System.out.println("-----------------------------------------------");
+			break;
+		default:	
+		}
+		}while(choix != 4);
+	}
+
 	private static void chargementMongoDB(List<Universite> u) {
 		for(Universite universite : u){
 			universiteDAO.create(universite);
@@ -166,7 +260,7 @@ public class Main {
 					formationDAO.create(formation);
 				}
 				for(Etudiant etudiant : etablissement.getEtudiants()){
-					etudiantDAO.create(etudiant);
+					DAOFactory.getEtudiantDAO().create(etudiant);
 					adresseDAO.create(etudiant.getAdresse());
 				}
 				adresseDAO.create(etablissement.getAdresse());
@@ -329,11 +423,11 @@ public class Main {
 		Adresse adresse = new Adresse();
 		System.out.print("Numéro : "); int numero = clavier.nextInt();
 		adresse.setNumero(numero);
-		System.out.print("Voie : "); String voie = clavier.next();
+		System.out.print("Voie : "); String voie = clavier.nextLine();
 		adresse.setVoie(voie);
 		System.out.print("Code postal : "); int code = clavier.nextInt();
 		adresse.setCode_postal(code);
-		System.out.print("Ville : "); String ville = clavier.next();
+		System.out.print("Ville : "); String ville = clavier.nextLine();
 		adresse.setVille(ville);
 		etudiant.setAdresse(adresse);
 		System.out.println("Select université : ");
@@ -354,8 +448,7 @@ public class Main {
 		etudiant.setFormation(formation);
 		System.out.println("Inscrit : ");
 		etudiant.setStatut(Statut.getStatut(clavier));
-		DAO etudiantDAO = DAOFactory.getEtudiantDAO();
-		etudiantDAO.create(etudiant);
+		DAOFactory.getEtudiantDAO().create(etudiant);
 		
 		// incremente nb_etudiant in université
 		Universite univ = ((Universite)universiteDAO.find(idUniv));

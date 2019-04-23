@@ -1,6 +1,8 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.bson.Document;
 
@@ -14,6 +16,9 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 import model.Adresse;
+import model.Etudiant;
+import model.Formation;
+import model.Statut;
 
 public class Adresse_DAO extends DAO<Adresse> {
 
@@ -87,6 +92,25 @@ public class Adresse_DAO extends DAO<Adresse> {
 			return null;
 		}
 	}
+	
+	public List<Adresse> findByLocation(String ville, int code, String voie) {
+		List<Adresse> listAdresse = new ArrayList<>();
+		try {
+			BasicDBObject whereQuery = new BasicDBObject();
+			whereQuery.put("ville", ville);
+			whereQuery.put("code postal", code);
+			whereQuery.put("voie", voie);
+			FindIterable<Document> cursor = collection.find(whereQuery);
+			Iterator it = cursor.iterator();
+			while(it.hasNext()){
+				Document doc = (Document) it.next();
+				listAdresse.add(new Adresse((int)doc.get("id"),(int)doc.get("numero"),(String)doc.get("voie"),(int)doc.get("code postal"),(String)doc.get("ville")));
+			}
+			return listAdresse;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	@Override
 	public int maxId() {
@@ -104,5 +128,7 @@ public class Adresse_DAO extends DAO<Adresse> {
 			i++;
 		}
 	}
+
+	
 
 }

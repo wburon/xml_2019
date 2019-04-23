@@ -48,5 +48,8 @@ public class Adresse {
 	public void setVille(String ville) {
 		this.ville = ville;
 	}
+	public String toString(){
+		return ""+ this.numero + " " + this.voie + " " + this.code_postal + " " + this.ville;
+	}
 
 }

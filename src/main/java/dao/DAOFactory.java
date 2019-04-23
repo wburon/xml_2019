@@ -11,23 +11,23 @@ public class DAOFactory {
 	/**
 	 * @return object Adresse_DAO
 	 */
-	public static DAO getAdresseDAO(){
+	public static Adresse_DAO getAdresseDAO(){
 		return new Adresse_DAO(conn);
 	}
 	
-	public static DAO getEtudiantDAO(){
+	public static Etudiant_DAO getEtudiantDAO(){
 		return new Etudiant_DAO(conn);
 	}
 	
-	public static DAO getFormationDAO(){
+	public static Formation_DAO getFormationDAO(){
 		return new Formation_DAO(conn);
 	}
 	
-	public static DAO getEtablissementDAO(){
+	public static Etablissement_DAO getEtablissementDAO(){
 		return new Etablissement_DAO(conn);
 	}
 	
-	public static DAO getUniversiteDAO(){
+	public static Universite_DAO getUniversiteDAO(){
 		return new Universite_DAO(conn);
 	}
 }
