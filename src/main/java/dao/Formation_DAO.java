@@ -13,7 +13,10 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
+import model.Adresse;
+import model.Etudiant;
 import model.Formation;
+import model.Statut;
 import model.Formation;
 
 public class Formation_DAO extends DAO<Formation>{
@@ -79,7 +82,7 @@ public class Formation_DAO extends DAO<Formation>{
 			FindIterable<Document> cursor = collection.find(whereQuery);
 			Document doc = cursor.first();
 			//int id, String intitule, List<String> disciplines
-			System.out.println(doc);
+			//System.out.println(doc);
 			return new Formation((int)doc.get("id"),(String)doc.get("intitule"),(List<String>) doc.get("disciplines"));
 		} catch (Exception e) {
 			return null;
@@ -94,12 +97,11 @@ public class Formation_DAO extends DAO<Formation>{
 	@Override
 	public void printAll(){
 		FindIterable<Document> iterDoc = collection.find();
-		int i = 1;
-		
+
 		Iterator it = iterDoc.iterator();
-		while(it.hasNext()){
-			System.out.println(it.next());
-			i++;
+		while (it.hasNext()) {
+			Document doc = (Document) it.next();
+			System.out.println(new Formation((int)doc.get("id"),(String)doc.get("intitule"),(List<String>) doc.get("disciplines")).toString());
 		}
 	}
 

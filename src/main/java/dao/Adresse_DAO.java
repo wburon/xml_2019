@@ -86,7 +86,7 @@ public class Adresse_DAO extends DAO<Adresse> {
 			FindIterable<Document> cursor = collection.find(whereQuery);
 			Document doc = cursor.first();
 			//int id, int numero, String voie, int code_postal, String ville
-			System.out.println(doc);
+			//System.out.println(doc);
 			return new Adresse((int)doc.get("id"),(int)doc.get("numero"),(String)doc.get("voie"),(int)doc.get("code postal"),(String)doc.get("ville"));
 		} catch (Exception e) {
 			return null;

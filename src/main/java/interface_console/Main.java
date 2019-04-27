@@ -1,6 +1,7 @@
 package interface_console;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,12 @@ import java.util.Scanner;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,11 +33,6 @@ import model.Statut;
 import model.Universite;
 
 public class Main {
-	
-	private static DAO universiteDAO = DAOFactory.getUniversiteDAO();
-	private static DAO etablissementDAO = DAOFactory.getEtablissementDAO();
-	private static DAO formationDAO = DAOFactory.getFormationDAO();
-	private static DAO adresseDAO = DAOFactory.getAdresseDAO();
 
 	public static void main(String[] args) {
 
@@ -109,13 +111,13 @@ public class Main {
 					System.out.println("-----------------------------------------------");
 					switch (secondChoix) {
 					case 1:
-						// TODO : ajout d'un formation
+						// TODO : ajout d'une formation
 						break;
 					case 2:
-						// TODO : modifier un formation
+						// TODO : modifier une formation
 						break;
 					case 3:
-						// TODO : rechercher un formation
+						// TODO : rechercher une formation
 						break;
 					case 4:
 						break;
@@ -126,23 +128,27 @@ public class Main {
 				}
 				break;
 			case 4:
-				// TODO : lister l'ensemble des étudiants
+				printAllStudent();
+				System.out.println("-----------------------------------------------");
 				break;
 			case 5:
-				// TODO : lister l'ensemble des formations
+				printAllFormation();
+				System.out.println("-----------------------------------------------");
 				break;
 			case 6:
-				// TODO : lister l'ensemble des universités
+				printAllUniversity();
+				System.out.println("-----------------------------------------------");
 				break;
 			case 7:
-				// TODO : Exctraction de data
+				saveToXML(DAOFactory.getUniversiteDAO().getUniversity());
 				break;
 			case 8:
 				List<Universite> u = importationXMLDB();
 				chargementMongoDB(u);
 				break;
 			case 9:
-				// TODO or not TODO : les cours d'un étudiant
+				coursesOfOneStudent(clavier);
+				System.out.println("-----------------------------------------------");
 				break;
 			case 10:
 				break;
@@ -154,6 +160,238 @@ public class Main {
 		System.out.println("DATA SAVE !");
 		System.out.println("BYE !");
 
+	}
+	
+	private static void saveToXML(List<Universite> universites) {
+	    Document dom;
+
+	    // instance of a DocumentBuilderFactory
+	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	    try {
+	        // use factory to get an instance of document builder
+	        DocumentBuilder db = dbf.newDocumentBuilder();
+	        // create instance of DOM
+	        dom = db.newDocument();
+
+	        // create the root element
+	        Element rootEle = dom.createElement("universites");
+	        
+	        for(Universite univ : universites){
+	        	// create data elements and place them under root
+	        	Element universite = dom.createElement("universite");
+	        		// append id
+	        		Element id = dom.createElement("id");
+	        		id.appendChild(dom.createTextNode(Integer.toString((univ.getId()))));
+	        		universite.appendChild(id);
+	        		// append name
+	        		Element name = dom.createElement("name");
+	        		name.appendChild(dom.createTextNode(univ.getNom()));
+	        		universite.appendChild(name);
+	        		// append nbFaculte
+	        		Element nbFaculte = dom.createElement("nbFaculte");
+	        		nbFaculte.appendChild(dom.createTextNode(Integer.toString(univ.getNb_facultes())));
+	        		universite.appendChild(nbFaculte);
+	        		// append nbEtudiant
+	        		Element nbEtudiant = dom.createElement("nbEtudiant");
+	        		nbEtudiant.appendChild(dom.createTextNode(Integer.toString(univ.getNb_etudiants())));
+	        		universite.appendChild(nbEtudiant);
+	        		// append etablissements
+	        		Element etablissements = dom.createElement("etablissements");
+	        		for (Etablissement etab : univ.getEtablissements()){
+	        			Element etablissement = dom.createElement("etablissement");
+	        			// append id
+		        		Element idEtab = dom.createElement("id");
+		        		idEtab.appendChild(dom.createTextNode(Integer.toString((etab.getId()))));
+		        		etablissement.appendChild(idEtab);
+		        		// append name
+		        		Element nameEtab = dom.createElement("name");
+		        		nameEtab.appendChild(dom.createTextNode(etab.getNom()));
+		        		etablissement.appendChild(nameEtab);
+	        			// append type
+		        		Element typeEtab = dom.createElement("type");
+		        		typeEtab.appendChild(dom.createTextNode(etab.getType()));
+		        		etablissement.appendChild(typeEtab);
+		        		// append adresse
+		        		Element adresseEtab = dom.createElement("adresse");
+		        			// append id
+		        			Element idAdresse = dom.createElement("id");
+		        			idAdresse.appendChild(dom.createTextNode(Integer.toString(etab.getAdresse().getId())));
+		        			adresseEtab.appendChild(idAdresse);
+		        			// append numero
+		        			Element numeroAdresse = dom.createElement("numero");
+		        			numeroAdresse.appendChild(dom.createTextNode(Integer.toString(etab.getAdresse().getNumero())));
+		        			adresseEtab.appendChild(numeroAdresse);
+		        			// append voie
+		        			Element voieAdresse = dom.createElement("voie");
+		        			voieAdresse.appendChild(dom.createTextNode(etab.getAdresse().getVoie()));
+		        			adresseEtab.appendChild(voieAdresse);
+		        			// append code postal
+		        			Element codeAdresse = dom.createElement("codePostal");
+		        			codeAdresse.appendChild(dom.createTextNode(Integer.toString(etab.getAdresse().getCode_postal())));
+		        			adresseEtab.appendChild(codeAdresse);
+		        			// append ville
+		        			Element villeAdresse = dom.createElement("ville");
+		        			villeAdresse.appendChild(dom.createTextNode(etab.getAdresse().getVille()));
+		        			adresseEtab.appendChild(villeAdresse);
+		        		etablissement.appendChild(adresseEtab);
+		        		// append etudiants
+		        		Element etudiants = dom.createElement("etudiants");
+		        		for(Etudiant etud : etab.getEtudiants()){
+		        			Element etudiant = dom.createElement("etudiant");
+		        			// append id
+		        			Element idEtudiant = dom.createElement("id");
+		        			idEtudiant.appendChild(dom.createTextNode(Integer.toString(etud.getId())));
+		        			etudiant.appendChild(idEtudiant);
+		        			// append nom
+		        			Element nomEtudiant = dom.createElement("nom");
+		        			nomEtudiant.appendChild(dom.createTextNode(etud.getNom()));
+		        			etudiant.appendChild(nomEtudiant);
+		        			// append prenom
+		        			Element prenomEtudiant = dom.createElement("prenom");
+		        			prenomEtudiant.appendChild(dom.createTextNode(etud.getPrenom()));
+		        			etudiant.appendChild(prenomEtudiant);
+		        			// append adresse
+			        		Element adresseEtud = dom.createElement("adresse");
+			        			// append id
+			        			Element idAdresseEtud = dom.createElement("id");
+			        			idAdresseEtud.appendChild(dom.createTextNode(Integer.toString(etud.getAdresse().getId())));
+			        			adresseEtud.appendChild(idAdresseEtud);
+			        			// append numero
+			        			Element numeroAdresseEtud = dom.createElement("numero");
+			        			numeroAdresseEtud.appendChild(dom.createTextNode(Integer.toString(etud.getAdresse().getNumero())));
+			        			adresseEtud.appendChild(numeroAdresseEtud);
+			        			// append voie
+			        			Element voieAdresseEtud = dom.createElement("voie");
+			        			voieAdresseEtud.appendChild(dom.createTextNode((etud.getAdresse().getVoie())));
+			        			adresseEtud.appendChild(voieAdresseEtud);
+			        			// append code postal
+			        			Element codeAdresseEtud = dom.createElement("codePostal");
+			        			codeAdresseEtud.appendChild(dom.createTextNode(Integer.toString(etud.getAdresse().getCode_postal())));
+			        			adresseEtud.appendChild(codeAdresseEtud);
+			        			// append ville
+			        			Element villeAdresseEtud = dom.createElement("ville");
+			        			villeAdresseEtud.appendChild(dom.createTextNode(etud.getAdresse().getVille()));
+			        			adresseEtud.appendChild(villeAdresseEtud);
+			        		etudiant.appendChild(adresseEtud);
+			        		// append formation
+			        		Element formationEtud = dom.createElement("formation");
+			        			//append id
+			        			Element idFormation = dom.createElement("id");
+			        			idFormation.appendChild(dom.createTextNode(Integer.toString(etud.getFormation().getId())));
+			        			formationEtud.appendChild(idFormation);
+			        			// append intitule
+			        			Element intituleFormation = dom.createElement("intitule");
+			        			intituleFormation.appendChild(dom.createTextNode(etud.getFormation().getIntitule()));
+			        			formationEtud.appendChild(intituleFormation);
+			        			// append disciplines
+			        			Element disciplinesEtud = dom.createElement("disciplines");
+			        			for(String disc : etud.getFormation().getDisciplines()){
+			        				Element discipline = dom.createElement("discipline");
+			        				discipline.appendChild(dom.createTextNode(disc));
+			        				disciplinesEtud.appendChild(discipline);
+			        			}
+			        			formationEtud.appendChild(disciplinesEtud);
+			        		etudiant.appendChild(formationEtud);
+			        		// append statut
+			        		Element statutEtud = dom.createElement("statut");
+			        		statutEtud.appendChild(dom.createTextNode(etud.getStatut().getName()));
+			        		etudiant.appendChild(statutEtud);
+			        	etudiants.appendChild(etudiant);	
+		        		}
+		        		etablissement.appendChild(etudiants);
+		        		// append diplome
+		        		Element diplomes = dom.createElement("diplomes");
+		        		for(String d : etab.getDiplomes()){
+		        			Element diplome = dom.createElement("diplome");
+		        			diplome.appendChild(dom.createTextNode(d));
+		        			diplomes.appendChild(diplome);
+		        		}
+		        		etablissement.appendChild(diplomes);
+		        		// append formations
+		        		Element formations = dom.createElement("formations");
+		        		for(Formation form : etab.getFormations()){
+		        			Element formation = dom.createElement("formation");
+		        			//append id
+		        			Element idFormation = dom.createElement("id");
+		        			idFormation.appendChild(dom.createTextNode(Integer.toString(form.getId())));
+		        			formation.appendChild(idFormation);
+		        			// append intitule
+		        			Element intituleFormation = dom.createElement("intitule");
+		        			intituleFormation.appendChild(dom.createTextNode(form.getIntitule()));
+		        			formation.appendChild(intituleFormation);
+		        			// append disciplines
+		        			Element disciplinesEtud = dom.createElement("disciplines");
+		        			for(String disc : form.getDisciplines()){
+		        				Element discipline = dom.createElement("discipline");
+		        				discipline.appendChild(dom.createTextNode(disc));
+		        				disciplinesEtud.appendChild(discipline);
+		        			}
+		        			formation.appendChild(disciplinesEtud);
+		        			formations.appendChild(formation);
+		        		}
+		        		etablissement.appendChild(formations);
+		        		etablissements.appendChild(etablissement);
+	        		}
+	        		universite.appendChild(etablissements);
+	        		rootEle.appendChild(universite);
+	        }
+
+	        dom.appendChild(rootEle);
+
+	        try {
+	            Transformer tr = TransformerFactory.newInstance().newTransformer();
+	            tr.setOutputProperty(OutputKeys.METHOD, "xml");
+	            tr.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+
+	            // send DOM to file
+	            tr.transform(new DOMSource(dom), 
+	                                 new StreamResult(new FileOutputStream("dbProject.xml")));
+
+	        } catch (TransformerException te) {
+	            System.out.println(te.getMessage());
+	        } catch (IOException ioe) {
+	            System.out.println(ioe.getMessage());
+	        }
+	    } catch (ParserConfigurationException pce) {
+	        System.out.println("UsersXML: Error trying to instantiate DocumentBuilder " + pce);
+	    }
+	}
+
+	private static void coursesOfOneStudent(Scanner clavier) {
+		System.out.println("Vous devez avoir le numero d'un étudiant pour connaitre ces cours ! Si vous ne le connaissez pas nous vous invitons à utiliser la fonction de recherche.");
+		int choix;
+		do{
+			System.out.println("1- ID");
+			System.out.println("2- Recherche");
+			System.out.println("3- Annuler");
+			choix = clavier.nextInt();
+			switch(choix){
+			case 1:
+				System.out.print("ID : "); 
+				for(String disc : DAOFactory.getEtudiantDAO().getCourses(clavier.nextInt())){
+					System.out.println(disc);
+				}
+				break;
+			case 2:
+				findEtudiant(clavier);
+				break;
+			case 3:
+				break;
+			default:
+			}
+		}while(choix != 3 && choix != 1);
+	}
+
+	private static void printAllUniversity() {
+		DAOFactory.getUniversiteDAO().printAll();
+	}
+
+	private static void printAllFormation() {
+		DAOFactory.getFormationDAO().printAll();		
+	}
+
+	private static void printAllStudent() {
+		DAOFactory.getEtudiantDAO().printAll();
 	}
 
 	private static void findEtudiant(Scanner clavier) {
@@ -201,7 +439,7 @@ public class Main {
 			System.out.println("Merci d'avoir utilisé la fonction recherche étudiant !");
 		default:
 		}
-		}while(choix != 6);
+		}while(choix != 5);
 	}
 
 	private static void modifyEtudiant(Scanner clavier) {
@@ -253,17 +491,17 @@ public class Main {
 
 	private static void chargementMongoDB(List<Universite> u) {
 		for(Universite universite : u){
-			universiteDAO.create(universite);
+			DAOFactory.getUniversiteDAO().create(universite);
 			for(Etablissement etablissement : universite.getEtablissements()){
-				etablissementDAO.create(etablissement);
+				DAOFactory.getEtablissementDAO().create(etablissement);
 				for(Formation formation : etablissement.getFormations()){
-					formationDAO.create(formation);
+					DAOFactory.getFormationDAO().create(formation);
 				}
 				for(Etudiant etudiant : etablissement.getEtudiants()){
 					DAOFactory.getEtudiantDAO().create(etudiant);
-					adresseDAO.create(etudiant.getAdresse());
+					DAOFactory.getAdresseDAO().create(etudiant.getAdresse());
 				}
-				adresseDAO.create(etablissement.getAdresse());
+				DAOFactory.getAdresseDAO().create(etablissement.getAdresse());
 				
 			}
 		}
@@ -431,29 +669,29 @@ public class Main {
 		adresse.setVille(ville);
 		etudiant.setAdresse(adresse);
 		System.out.println("Select université : ");
-		universiteDAO.printAll();
+		DAOFactory.getUniversiteDAO().printAll();
 		int idUniv = clavier.nextInt();
-		Universite u = ((Universite)universiteDAO.find(idUniv));
+		Universite u = (DAOFactory.getUniversiteDAO().find(idUniv));
 		List<Etablissement> etablissements = u.getEtablissements();
 		for(Etablissement e : etablissements)
 			System.out.println(e.toString());
 		System.out.println("Select etablissement : ");
 		int idEtab = clavier.nextInt();
-		List<Formation> formations = ((Etablissement)etablissementDAO.find(idEtab)).getFormations();
+		List<Formation> formations = (DAOFactory.getEtablissementDAO().find(idEtab)).getFormations();
 		for(Formation f : formations)
 			System.out.println(f.toString());
 		System.out.println("Select formation : ");
 		int idForm = clavier.nextInt();
-		Formation formation = (Formation)formationDAO.find(idForm);
+		Formation formation = DAOFactory.getFormationDAO().find(idForm);
 		etudiant.setFormation(formation);
 		System.out.println("Inscrit : ");
 		etudiant.setStatut(Statut.getStatut(clavier));
 		DAOFactory.getEtudiantDAO().create(etudiant);
 		
 		// incremente nb_etudiant in université
-		Universite univ = ((Universite)universiteDAO.find(idUniv));
+		Universite univ = (DAOFactory.getUniversiteDAO().find(idUniv));
 		univ.addOneStudent();
-		universiteDAO.update(univ);
+		DAOFactory.getUniversiteDAO().update(univ);
 	}
 
 	public static void printChoix() {

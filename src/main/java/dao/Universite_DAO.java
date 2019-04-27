@@ -128,4 +128,13 @@ public class Universite_DAO extends DAO<Universite>{
 		}
 	}
 
+	public List<Universite> getUniversity() {
+		List<Universite> listUniversite = new ArrayList<>();
+		FindIterable<Document> iterDoc = collection.find();
+		for(Document doc : iterDoc){
+			listUniversite.add(find(doc.getInteger("id")));
+		}
+		return listUniversite;
+	}
+
 }

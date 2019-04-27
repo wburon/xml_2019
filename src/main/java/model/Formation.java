@@ -35,6 +35,9 @@ public class Formation {
 		this.disciplines = disciplines;
 	}
 	public String toString(){
-		return "" + this.id + " " + this.intitule;
+		String res = "" + this.id + " " + this.intitule;
+		for (String disc : this.disciplines)
+			res += " " + disc;
+		return res;
 	}
 }

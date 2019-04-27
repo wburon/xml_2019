@@ -91,11 +91,12 @@ public class Etudiant_DAO extends DAO<Etudiant> {
 			Document doc = cursor.first();
 			// int id, String nom, String prenom, Adresse adresse, Formation
 			// formation, Statut statut
-			System.out.println(doc);
-			return new Etudiant((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("prenom"),
+//			System.out.println(doc);
+			Etudiant e =  new Etudiant((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("prenom"),
 					(Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
 					(Formation) DAOFactory.getFormationDAO().find((int) doc.get("formation")),
-					(Statut) doc.get("statut"));
+					Statut.valueOf((String) doc.get("statut")));
+			return e;
 		} catch (Exception e) {
 			return null;
 		}
@@ -174,13 +175,19 @@ public class Etudiant_DAO extends DAO<Etudiant> {
 	@Override
 	public void printAll() {
 		FindIterable<Document> iterDoc = collection.find();
-		int i = 1;
 
 		Iterator it = iterDoc.iterator();
 		while (it.hasNext()) {
-			System.out.println(it.next());
-			i++;
+			Document doc = (Document) it.next();
+			System.out.println(new Etudiant((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("prenom"),
+					(Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
+					(Formation) DAOFactory.getFormationDAO().find((int) doc.get("formation")),
+					Statut.getStautByName(doc.getString("statut"))).toString());
 		}
+	}
+	
+	public List<String> getCourses(int id){
+		return find(id).getFormation().getDisciplines();
 	}
 
 }
