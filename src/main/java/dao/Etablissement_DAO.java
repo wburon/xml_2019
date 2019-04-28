@@ -18,6 +18,7 @@ import model.Adresse;
 import model.Etablissement;
 import model.Etudiant;
 import model.Formation;
+import model.Universite;
 
 public class Etablissement_DAO extends DAO<Etablissement>{
 

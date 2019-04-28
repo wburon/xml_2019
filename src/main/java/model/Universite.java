@@ -49,7 +49,10 @@ public class Universite {
 		this.etablissements = etablissements;
 	}
 	public void addOneStudent() {
-		this.nb_etudiants++;	
+		this.nb_etudiants++;
+	}
+	public void addOneFaculte() {
+		this.nb_facultes++;
 	}
 
 }

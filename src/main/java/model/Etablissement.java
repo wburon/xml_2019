@@ -68,6 +68,6 @@ public class Etablissement {
 		this.formations = formations;
 	}
 	public String toString(){
-		return "" + this.id + " " + this.nom + " " + this.type;
+		return "" + this.id + " " + this.nom + " " + this.type + " " + this.adresse.getNumero() + " " + this.adresse.getVoie() + " " + this.adresse.getCode_postal() + " "+ this.adresse.getVille();
 	}
 }

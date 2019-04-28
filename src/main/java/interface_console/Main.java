@@ -47,13 +47,14 @@ public class Main {
 			int secondChoix = 0;
 			switch (choix) {
 			case 1:
+				do{
 				System.out.println("Et maintenant ?");
 				System.out.println("1- Ajouter un étudiant");
 				System.out.println("2- Modifier un étudiant");
 				System.out.println("3- Rechercher un étudiant");
 				System.out.println("4- Cancel");
 				System.out.println("-----------------------------------------------");
-				while (secondChoix != 4) {
+				 
 					secondChoix = clavier.nextInt();
 					switch (secondChoix) {
 					case 1:
@@ -71,7 +72,7 @@ public class Main {
 						System.out.println("Tu sais pas lire ?");
 						System.out.println("-----------------------------------------------");
 					}
-				}
+				}while (secondChoix != 4);
 				break;
 			case 2:
 				while (secondChoix != 4) {
@@ -84,10 +85,10 @@ public class Main {
 					System.out.println("-----------------------------------------------");
 					switch (secondChoix) {
 					case 1:
-						// TODO : ajout d'un établissement
+						ajoutEtablissement(clavier);
 						break;
 					case 2:
-						// TODO : modifier un établissement
+						mofifyEtablissement(clavier);
 						break;
 					case 3:
 						// TODO : rechercher un établissement
@@ -162,6 +163,148 @@ public class Main {
 
 	}
 	
+	private static void mofifyEtablissement(Scanner clavier) {
+		int choix;
+		System.out.print("ID : ");
+		int id = clavier.nextInt();
+		do{
+		System.out.println("Voici les informations que nous avons à ce jour : ");
+		Etablissement e = DAOFactory.getEtablissementDAO().find(id);
+		System.out.println(e.toString());
+		System.out.println("Que souhaitez-vous modifier ?");
+		System.out.println("1- Nom/Type");
+		System.out.println("2- Adresse");
+		System.out.println("3- Etudiants");
+		System.out.println("4- Diplomes");
+		System.out.println("5- Formations");
+		System.out.println("6- Annuler");
+		choix = clavier.nextInt();
+		switch(choix){
+		case 1:
+			System.out.print("Nom : ");
+			e.setNom(clavier.nextLine());
+			System.out.print("Type : ");
+			e.setType(clavier.nextLine());
+			DAOFactory.getEtablissementDAO().update(e);
+			break;
+		case 2:
+			Adresse adresse = e.getAdresse();
+			System.out.print("Adresse, numero : ");
+			adresse.setNumero(clavier.nextInt());
+			System.out.print("voie : ");
+			adresse.setVoie(clavier.nextLine());
+			System.out.print("code postal : ");
+			adresse.setCode_postal(clavier.nextInt());
+			System.out.print("ville : ");
+			adresse.setVille(clavier.nextLine());
+			e.setAdresse(adresse);
+			DAOFactory.getEtablissementDAO().update(e);
+			break;
+		case 3:
+			int secondChoix;
+			do{
+			System.out.println("A propos des étudiants :");
+			System.out.println("1- Affectation d'un étudiant");
+			System.out.println("2- Suppression d'un étudiant");
+			System.out.println("3- Annuler");
+			secondChoix = clavier.nextInt();
+			switch(secondChoix){
+			case 1:
+				System.out.println("Quel étudiant affectons-nous à cet établissement ?");
+				DAOFactory.getEtudiantDAO().printAll();
+				System.out.println("ID : "); int idEtud = clavier.nextInt();
+				if(containsIDEtud(e.getEtudiants(), idEtud)){
+					System.out.println("Cet étudiant est déjà affecter a cet établissement !");
+				}else {
+					List<Etudiant> le = e.getEtudiants();
+					le.add(DAOFactory.getEtudiantDAO().find(idEtud));
+					e.setEtudiants(le);
+					DAOFactory.getEtablissementDAO().update(e);
+				}
+				break;
+			case 2:
+				System.out.println("Quel étudiant supprimons-nous de cet établissement ?");
+				for(Etudiant etud : e.getEtudiants()){
+					etud.toString();
+				}
+				System.out.println("ID : "); int idEtudS = clavier.nextInt();
+				if(containsIDEtud(e.getEtudiants(), idEtudS)){
+					List<Etudiant> let = e.getEtudiants();
+					for(int i=0; i<let.size(); i++){
+						Etudiant etudi = let.get(i);
+						if(etudi.getId() == idEtudS)
+							let.remove(i);
+					}
+					e.setEtudiants(let);
+					DAOFactory.getEtablissementDAO().update(e);
+				}else{
+					System.out.println("Cet étudiant n'existe pas");
+				}
+				break;
+			case 3:
+				break;
+			default:
+			}
+			} while(secondChoix != 3);
+			break;
+		case 4:
+			//TODO
+			break;
+		case 5:
+			//TODO
+			break;
+		case 6:
+			System.out.println("-----------------------------------------------");
+			break;
+		default:	
+		}
+		}while(choix != 6);
+	}
+
+	private static void ajoutEtablissement(Scanner clavier) {
+		System.out.println("Pour quelle université souhaitez-vous ajouter un établissement ?");
+		System.out.println("Select université : ");
+		DAOFactory.getUniversiteDAO().printAll();
+		int idUniv = clavier.nextInt();
+		Universite u = (DAOFactory.getUniversiteDAO().find(idUniv));
+		// Let's create etablissement
+		// int id, String nom, String type, Adresse adresse, List<Etudiant> etudiants,List<String> diplomes, List<Formation> formations
+		System.out.println("Let's create an etablissement !");
+		System.out.print("Nom : "); String name = clavier.nextLine();
+		System.out.print("Type (faculte,institut,..): "); String type = clavier.nextLine();
+		System.out.println("Adresse,");
+		Adresse adresse = new Adresse();
+		System.out.print("Numéro : "); int numero = clavier.nextInt();
+		adresse.setNumero(numero);
+		System.out.print("Voie : "); String voie = clavier.nextLine();
+		adresse.setVoie(voie);
+		System.out.print("Code postal : "); int code = clavier.nextInt();
+		adresse.setCode_postal(code);
+		System.out.print("Ville : "); String ville = clavier.nextLine();
+		adresse.setVille(ville);
+		System.out.print("Nombre de diplome : "); int nbDiplome = clavier.nextInt();
+		List<String> diplomes = new ArrayList<>();
+		for(int i = 0; i<nbDiplome ; i++){
+			System.out.print(""+i+" : "); diplomes.add(clavier.nextLine());
+		}
+		Etablissement etab = new Etablissement();
+		etab.setNom(name);
+		etab.setType(type);
+		etab.setAdresse(adresse);
+		etab.setDiplomes(diplomes);
+		etab.setEtudiants(new ArrayList<Etudiant>());
+		etab.setFormations(new ArrayList<Formation>());
+		List<Etablissement> le = u.getEtablissements();
+		le.add(DAOFactory.getEtablissementDAO().find(DAOFactory.getEtablissementDAO().create(etab)));
+		u.setEtablissements(le);
+		if(type.equals("faculte")){
+			u.addOneFaculte();
+		}
+		DAOFactory.getUniversiteDAO().update(u);
+		System.out.println("Pour associer des étudiants ou des formations à cet établissement, referez-vous aux fonctions correspondantes.");
+		
+	}
+
 	private static void saveToXML(List<Universite> universites) {
 	    Document dom;
 
@@ -597,6 +740,13 @@ public class Main {
 		return false;
 	}
 
+	private static boolean containsIDEtud(List<Etudiant> listEtudiants, int id){
+		for(Etudiant e : listEtudiants)
+			if(e.getId() == id)
+				return true;
+		return false;
+	}
+	
 	private static List<String> getDiplomes(String tag, Element element) {
 		List<String> listDiplome = new ArrayList<>();
 		NodeList nd = element.getElementsByTagName("tag");
@@ -692,6 +842,13 @@ public class Main {
 		Universite univ = (DAOFactory.getUniversiteDAO().find(idUniv));
 		univ.addOneStudent();
 		DAOFactory.getUniversiteDAO().update(univ);
+		
+		// add student to etablissement
+		Etablissement etab = DAOFactory.getEtablissementDAO().find(idEtab);
+		List<Etudiant> le = etab.getEtudiants();
+		le.add(DAOFactory.getEtudiantDAO().find(DAOFactory.getEtudiantDAO().create(etudiant)));
+		etab.setEtudiants(le);
+		DAOFactory.getEtablissementDAO().update(etab);
 	}
 
 	public static void printChoix() {
