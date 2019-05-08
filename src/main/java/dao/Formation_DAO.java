@@ -1,5 +1,6 @@
 package dao;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -102,6 +103,41 @@ public class Formation_DAO extends DAO<Formation>{
 		while (it.hasNext()) {
 			Document doc = (Document) it.next();
 			System.out.println(new Formation((int)doc.get("id"),(String)doc.get("intitule"),(List<String>) doc.get("disciplines")).toString());
+		}
+	}
+
+	public List<Formation> findByIntitule(String intitule) {
+		List<Formation> listFormation = new ArrayList<>();
+		try {
+			BasicDBObject whereQuery = new BasicDBObject();
+			whereQuery.put("intitule", intitule);
+			FindIterable<Document> cursor = collection.find(whereQuery);
+			Iterator it = cursor.iterator();
+			while (it.hasNext()) {
+				Document doc = (Document) it.next();
+				listFormation.add(new Formation((int)doc.get("id"),(String)doc.get("intitule"),(List<String>) doc.get("disciplines")));
+			}
+			return listFormation;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Formation> findByDiscipline(List<String> listDisc) {
+		List<Formation> listFormation = new ArrayList<>();
+		try {
+			BasicDBObject whereQuery = new BasicDBObject();
+			FindIterable<Document> cursor = collection.find(whereQuery);
+			Iterator it = cursor.iterator();
+			while (it.hasNext()) {
+				Document doc = (Document) it.next();
+				List<String> disciplines = (List<String>) doc.get("disciplines");
+				if(disciplines.containsAll(listDisc))
+					listFormation.add(new Formation((int)doc.get("id"),(String)doc.get("intitule"),disciplines));
+			}
+			return listFormation;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 

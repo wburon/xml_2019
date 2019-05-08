@@ -11,11 +11,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -91,7 +94,7 @@ public class Main {
 						mofifyEtablissement(clavier);
 						break;
 					case 3:
-						// TODO : rechercher un établissement
+						findEtablissement(clavier);
 						break;
 					case 4:
 						break;
@@ -112,13 +115,13 @@ public class Main {
 					System.out.println("-----------------------------------------------");
 					switch (secondChoix) {
 					case 1:
-						// TODO : ajout d'une formation
+						ajoutFormation(clavier);
 						break;
 					case 2:
-						// TODO : modifier une formation
+						modifyFormation(clavier);
 						break;
 					case 3:
-						// TODO : rechercher une formation
+						findFormation(clavier);
 						break;
 					case 4:
 						break;
@@ -152,6 +155,12 @@ public class Main {
 				System.out.println("-----------------------------------------------");
 				break;
 			case 10:
+				try {
+					pageWeb();
+				} catch (TransformerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				break;
 			default:
 				System.out.println("Tu sais pas lire ?");
@@ -163,6 +172,182 @@ public class Main {
 
 	}
 	
+	private static void pageWeb() throws TransformerException {
+		TransformerFactory factory = TransformerFactory.newInstance();
+        Source xslt = new StreamSource(new File("transform.xslt"));
+        Transformer transformer = factory.newTransformer(xslt);
+
+        Source text = new StreamSource(new File("dbProject.xml"));
+        transformer.transform(text, new StreamResult(new File("output.xml")));
+
+	}
+
+	private static void findFormation(Scanner clavier) {
+		int choix;
+		do{
+		System.out.println("FONCTION RECHERCHE FORMATION :");
+		System.out.println("1- by ID");
+		System.out.println("2- by intitule");
+		System.out.println("3- by discipline");
+		System.out.println("4- Annuler");
+		choix = clavier.nextInt();
+		switch(choix){
+		case 1:
+			System.out.print("ID : ");
+			System.out.println(DAOFactory.getFormationDAO().find(clavier.nextInt()).toString());
+			break;
+		case 2:
+			System.out.print("Intitule : ");
+			String intitule = clavier.next();
+			for(Formation f : DAOFactory.getFormationDAO().findByIntitule(intitule)){
+				f.toString();
+			}
+			break;
+		case 3:
+			System.out.print("Recherche par combien de disciplines ?");
+			int nbDisc = clavier.nextInt();
+			List<String> listDisc = new ArrayList<>();
+			for(int i = 0; i < nbDisc; i++){
+				System.out.print(i+ ": ");
+				listDisc.add(clavier.nextLine());
+			}
+			for(Formation f : DAOFactory.getFormationDAO().findByDiscipline(listDisc)){
+				f.toString();
+			}
+			break;
+		case 4:
+			System.out.println("Merci d'avoir utilisé la fonction recherche formation !");
+			break;
+		default:
+		}
+		}while(choix != 4);
+		
+	}
+
+	private static void modifyFormation(Scanner clavier) {
+		int choix;
+		System.out.print("ID : "); int id = clavier.nextInt();
+		do{
+			System.out.println("Voici les informations que nous avons à ce jour : ");
+			Formation f = DAOFactory.getFormationDAO().find(id);
+			System.out.println(f.toString());
+			System.out.println("Que souhaitez-vous modifier ?");
+			System.out.println("1- Intitule");
+			System.out.println("2- Disciplines");
+			System.out.println("3- Annuler");
+			choix = clavier.nextInt();
+			switch(choix){
+			case 1:
+				System.out.print("Nouvel intitule : "); String intitule = clavier.nextLine();
+				f.setIntitule(intitule);
+				DAOFactory.getFormationDAO().update(f);
+				break;
+			case 2:
+				System.out.println("Voici les disciplines de cette formation :");
+				for(String s : f.getDisciplines())
+					System.out.print(s + " ");
+				int secondChoix;
+				do{
+					System.out.println("Que faisons nous ?");
+					System.out.println("1- Ajout d'une discipline");
+					System.out.println("2- Suppression d'une discipline");
+					System.out.println("3- Annuler");
+					secondChoix = clavier.nextInt();
+					switch(secondChoix){
+					case 1:
+						System.out.print("Nom de la nouvelle discipline : "); String newDisc = clavier.nextLine();
+						List<String> disciplines = f.getDisciplines();
+						disciplines.add(newDisc);
+						f.setDisciplines(disciplines);
+						DAOFactory.getFormationDAO().update(f);
+						break;
+					case 2:
+						System.out.print("Le nom de la discipline a supprimer : "); String supprDisc = clavier.nextLine();
+						List<String> discipliness = f.getDisciplines();
+						discipliness.remove(discipliness.indexOf(supprDisc));
+						f.setDisciplines(discipliness);
+						DAOFactory.getFormationDAO().update(f);
+						break;
+					case 3:
+						break;
+					default:
+					}
+				}while(secondChoix != 3);
+				break;
+			case 3:
+				break;
+			default:
+			}
+		}while(choix != 3);
+		
+	}
+
+	private static void ajoutFormation(Scanner clavier) {
+		System.out.println("Select université : ");
+		DAOFactory.getUniversiteDAO().printAll();
+		int idUniv = clavier.nextInt();
+		Universite u = (DAOFactory.getUniversiteDAO().find(idUniv));
+		List<Etablissement> etablissements = u.getEtablissements();
+		for(Etablissement e : etablissements)
+			System.out.println(e.toString());
+		System.out.println("Select etablissement : ");
+		int idEtab = clavier.nextInt();
+		Etablissement e = DAOFactory.getEtablissementDAO().find(idEtab);
+		List<Formation> listFormations = e.getFormations();
+		System.out.println("Ajoutons maintenant la formation :");
+		System.out.print("Intitule : "); String intitule = clavier.nextLine();
+		System.out.print("Combien de discipline ? "); int nbDisc = clavier.nextInt();
+		List<String> disciplines = new ArrayList<>();
+		for(int i=0; i<nbDisc; i++){
+			System.out.print(i+" : "); disciplines.add(clavier.nextLine());
+		}
+		int idF = DAOFactory.getFormationDAO().create(new Formation(0,intitule,disciplines));
+		listFormations.add(new Formation(idF, intitule, disciplines));
+		e.setFormations(listFormations);
+		DAOFactory.getEtablissementDAO().update(e);
+	}
+
+	private static void findEtablissement(Scanner clavier) {
+		int choix;
+		do{
+		System.out.println("FONCTION RECHERCHE ETABLISSEMENT :");
+		System.out.println("1- by ID");
+		System.out.println("2- by name");
+		System.out.println("3- by location");
+		System.out.println("4- Annuler");
+		choix = clavier.nextInt();
+		switch(choix){
+		case 1:
+			System.out.print("ID : ");
+			System.out.println(DAOFactory.getEtablissementDAO().find(clavier.nextInt()).toString());
+			break;
+		case 2:
+			System.out.print("Nom : ");
+			String nom = clavier.next();
+			for(Etablissement e : DAOFactory.getEtablissementDAO().findByName(nom)){
+				e.toString();
+			}
+			break;
+		case 3:
+			System.out.print("ville : ");
+			String ville = clavier.nextLine();
+			System.out.print("code postal : ");
+			int code = clavier.nextInt();
+			System.out.print("voie : ");
+			String voie = clavier.nextLine();
+			for(Etablissement e : DAOFactory.getEtablissementDAO().findByLocation(ville,code,voie)){
+				e.toString();
+			}
+			break;
+		case 4:
+			System.out.println("Merci d'avoir utilisé la fonction recherche établissement !");
+			break;
+		default:
+		}
+		}while(choix != 4);
+		
+	}
+
 	private static void mofifyEtablissement(Scanner clavier) {
 		int choix;
 		System.out.print("ID : ");
@@ -302,7 +487,6 @@ public class Main {
 		}
 		DAOFactory.getUniversiteDAO().update(u);
 		System.out.println("Pour associer des étudiants ou des formations à cet établissement, referez-vous aux fonctions correspondantes.");
-		
 	}
 
 	private static void saveToXML(List<Universite> universites) {

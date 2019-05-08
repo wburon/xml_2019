@@ -18,6 +18,7 @@ import model.Adresse;
 import model.Etablissement;
 import model.Etudiant;
 import model.Formation;
+import model.Statut;
 import model.Universite;
 
 public class Etablissement_DAO extends DAO<Etablissement>{
@@ -25,15 +26,11 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 	private MongoClient conn;
 	private MongoDatabase database;
 	private MongoCollection<Document> collection;
-	private DAO adresse,etudiant,formation;
 
 	public Etablissement_DAO(MongoClient conn) {
 		this.conn = conn;
 		this.database = conn.getDatabase("notre_database");
 		this.collection = this.database.getCollection("etablissement_collection");
-		this.adresse = DAOFactory.getAdresseDAO();
-		this.etudiant = DAOFactory.getEtudiantDAO();
-		this.formation = DAOFactory.getFormationDAO();
 	}
 
 	@Override
@@ -54,7 +51,7 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 						.append("formations", idFormations)
 						;
 			}else{
-				int idAdresse = adresse.create(obj.getAdresse());
+				int idAdresse = DAOFactory.getAdresseDAO().create(obj.getAdresse());
 				List<Integer> idEtudiants = new ArrayList<>();
 				for(Etudiant e : obj.getEtudiants())
 					idEtudiants.add(e.getId());
@@ -93,7 +90,7 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("nom", obj.getNom()));
 			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("type", obj.getType()));
 			//update adresse
-			adresse.update(obj.getAdresse());
+			DAOFactory.getAdresseDAO().update(obj.getAdresse());
 			//update etudiants
 			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("etudiants", obj.getEtudiants()));
 			//update diplomes
@@ -118,11 +115,11 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 //			System.out.println(doc);
 			List<Etudiant> etudiants = new ArrayList<>();
 			for(int i : (List<Integer>)doc.get("etudiants"))
-				etudiants.add((Etudiant)this.etudiant.find(i));
+				etudiants.add(DAOFactory.getEtudiantDAO().find(i));
 			List<Formation> formations = new ArrayList<>();
 			for(int i : (List<Integer>)doc.get("formations"))
-				formations.add((Formation)this.formation.find(i));
-			return new Etablissement((int)doc.get("id"),(String)doc.get("nom"),(String)doc.get("type"),(Adresse) adresse.find(doc.getInteger("adresse")),etudiants,(List<String>)doc.get("diplomes"),formations);
+				formations.add(DAOFactory.getFormationDAO().find(i));
+			return new Etablissement((int)doc.get("id"),(String)doc.get("nom"),(String)doc.get("type"),DAOFactory.getAdresseDAO().find(doc.getInteger("adresse")),etudiants,(List<String>)doc.get("diplomes"),formations);
 		} catch (Exception e) {
 			return null;
 		}
@@ -142,6 +139,59 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 		while(it.hasNext()){
 			System.out.println(it.next());
 			i++;
+		}
+	}
+
+	public List<Etablissement> findByName(String nom) {
+		List<Etablissement> listEtablissement = new ArrayList<>();
+		try {
+			BasicDBObject whereQuery = new BasicDBObject();
+			whereQuery.put("nom", nom);
+			FindIterable<Document> cursor = collection.find(whereQuery);
+			Iterator it = cursor.iterator();
+			while (it.hasNext()) {
+				Document doc = (Document) it.next();
+				List<Etudiant> etudiants = new ArrayList<>();
+				for(int i : (List<Integer>)doc.get("etudiants"))
+					etudiants.add(DAOFactory.getEtudiantDAO().find(i));
+				List<Formation> formations = new ArrayList<>();
+				for(int i : (List<Integer>)doc.get("formations"))
+					formations.add(DAOFactory.getFormationDAO().find(i));
+				listEtablissement.add(new Etablissement((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("type"),
+						(Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
+						etudiants,(List<String>)doc.get("diplomes"),formations));
+			}
+			return listEtablissement;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<Etablissement> findByLocation(String ville, int code, String voie) {
+		List<Etablissement> listEtablissement = new ArrayList<>();
+		try {
+			List<Adresse> listAdresse = DAOFactory.getAdresseDAO().findByLocation(ville, code, voie);
+			for (Adresse adresse : listAdresse) {
+				BasicDBObject whereQuery = new BasicDBObject();
+				whereQuery.put("adresse", adresse.getId());
+				FindIterable<Document> cursor = collection.find(whereQuery);
+				Iterator it = cursor.iterator();
+				while (it.hasNext()) {
+					Document doc = (Document) it.next();
+					List<Etudiant> etudiants = new ArrayList<>();
+					for(int i : (List<Integer>)doc.get("etudiants"))
+						etudiants.add(DAOFactory.getEtudiantDAO().find(i));
+					List<Formation> formations = new ArrayList<>();
+					for(int i : (List<Integer>)doc.get("formations"))
+						formations.add(DAOFactory.getFormationDAO().find(i));
+					listEtablissement
+							.add(new Etablissement((int) doc.get("id"), (String) doc.get("nom"), doc.getString("type"), (Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
+									etudiants,(List<String>)doc.get("diplomes"),formations));
+				}
+			}
+			return listEtablissement;
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
