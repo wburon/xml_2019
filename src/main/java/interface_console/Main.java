@@ -173,12 +173,12 @@ public class Main {
 	}
 	
 	private static void pageWeb() throws TransformerException {
-		TransformerFactory factory = TransformerFactory.newInstance();
+/*		TransformerFactory factory = TransformerFactory.newInstance();
         Source xslt = new StreamSource(new File("transform.xslt"));
         Transformer transformer = factory.newTransformer(xslt);
 
         Source text = new StreamSource(new File("dbProject.xml"));
-        transformer.transform(text, new StreamResult(new File("output.xml")));
+        transformer.transform(text, new StreamResult(new File("output.xml")));*/
 
 	}
 
