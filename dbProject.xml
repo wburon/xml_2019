@@ -3,8 +3,8 @@
 	<universite>
 		<id>1</id>
 		<name>UCO</name>
-		<nbFaculte>2</nbFaculte>
-		<nbEtudiant>10</nbEtudiant>
+		<nbFaculte>3</nbFaculte>
+		<nbEtudiant>11</nbEtudiant>
 		<etablissements>
 			<etablissement>
 				<id>1</id>
@@ -13,21 +13,21 @@
 				<adresse>
 					<id>1</id>
 					<numero>3</numero>
-					<voie>rabelais</voie>
+					<voie>rue rabelais</voie>
 					<codePostal>49000</codePostal>
-					<ville>angers</ville>
+					<ville>Angers</ville>
 				</adresse>
 				<etudiants>
 					<etudiant>
 						<id>1</id>
-						<nom>buron</nom>
-						<prenom>william</prenom>
+						<nom>Buron</nom>
+						<prenom>William</prenom>
 						<adresse>
 							<id>2</id>
-							<numero>3</numero>
-							<voie>rabelais</voie>
+							<numero>20</numero>
+							<voie>rue leonard</voie>
 							<codePostal>49000</codePostal>
-							<ville>angers</ville>
+							<ville>Angers</ville>
 						</adresse>
 						<formation>
 							<id>1</id>
@@ -38,7 +38,7 @@
 								<discipline>opti</discipline>
 							</disciplines>
 						</formation>
-						<statut>absent</statut>
+						<statut>present</statut>
 					</etudiant>
 					<etudiant>
 						<id>2</id>
@@ -83,6 +83,14 @@
 							<discipline>maths</discipline>
 							<discipline>stats</discipline>
 							<discipline>opti</discipline>
+						</disciplines>
+					</formation>
+					<formation>
+						<id>5</id>
+						<intitule>Mansumi</intitule>
+						<disciplines>
+							<discipline>Farm</discipline>
+							<discipline>Rune</discipline>
 						</disciplines>
 					</formation>
 				</formations>

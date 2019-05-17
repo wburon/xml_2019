@@ -107,9 +107,9 @@ public class Main {
 			case 3:
 				while (secondChoix != 4) {
 					System.out.println("Et maintenant ?");
-					System.out.println("1- Ajouter un formation");
-					System.out.println("2- Modifier un formation");
-					System.out.println("3- Rechercher un formation");
+					System.out.println("1- Ajouter une formation");
+					System.out.println("2- Modifier une formation");
+					System.out.println("3- Rechercher une formation");
 					System.out.println("4- Cancel");
 					secondChoix = clavier.nextInt();
 					System.out.println("-----------------------------------------------");
@@ -158,7 +158,6 @@ public class Main {
 				try {
 					pageWeb();
 				} catch (TransformerException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				break;
@@ -299,8 +298,9 @@ public class Main {
 		System.out.print("Intitule : "); clavier.nextLine(); String intitule = clavier.nextLine();
 		System.out.print("Combien de discipline ? "); int nbDisc = clavier.nextInt();
 		List<String> disciplines = new ArrayList<>();
+		clavier.nextLine();
 		for(int i=0; i<nbDisc; i++){
-			System.out.print(i+" : "); clavier.nextLine(); disciplines.add(clavier.nextLine());
+			System.out.print(i+" : "); disciplines.add(clavier.nextLine());
 		}
 		int idF = DAOFactory.getFormationDAO().create(new Formation(0,intitule,disciplines));
 		listFormations.add(new Formation(idF, intitule, disciplines));
