@@ -173,20 +173,19 @@ public class Main {
 
 	}
 	
+	/**
+	 * Fonction qui effectue la transformation xml -> html via le xslt
+	 */
 	private static void pageWeb() throws TransformerException {
-/*		TransformerFactory factory = TransformerFactory.newInstance();
-        Source xslt = new StreamSource(new File("transform.xslt"));
-        Transformer transformer = factory.newTransformer(xslt);
-
-        Source text = new StreamSource(new File("dbProject.xml"));
-        transformer.transform(text, new StreamResult(new File("output.xml")));*/
-		
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		Transformer transformer = tFactory.newTransformer(new StreamSource("transformation.xsl"));
-		transformer.transform(new StreamSource("dbProject.xml"), new StreamResult("etudiant.html"));
-		
+		transformer.transform(new StreamSource("dbProject.xml"), new StreamResult("etudiant.html"));	
 	}
 
+	/**
+	 * Fonctionnalité de recherche d'une formation
+	 * @param clavier
+	 */
 	private static void findFormation(Scanner clavier) {
 		int choix;
 		do{
@@ -229,6 +228,11 @@ public class Main {
 		}while(choix != 4);
 		
 	}
+	
+	/**
+	 * Fonctionnalité de modification d'une formation
+	 * @param clavier
+	 */
 
 	private static void modifyFormation(Scanner clavier) {
 		int choix;
@@ -287,6 +291,11 @@ public class Main {
 		}while(choix != 3);
 		
 	}
+	
+	/**
+	 * Fonctionnalité d'ajout d'une formation
+	 * @param clavier
+	 */
 
 	private static void ajoutFormation(Scanner clavier) {
 		System.out.println("Select université : ");
@@ -313,6 +322,11 @@ public class Main {
 		e.setFormations(listFormations);
 		DAOFactory.getEtablissementDAO().update(e);
 	}
+	
+	/**
+	 * Fonctionnalité de recherche d'un établissement
+	 * @param clavier
+	 */
 
 	private static void findEtablissement(Scanner clavier) {
 		int choix;
@@ -357,6 +371,10 @@ public class Main {
 		
 	}
 
+	/**
+	 * Fonctionnalité de modification d'un établissement
+	 * @param clavier
+	 */
 	private static void mofifyEtablissement(Scanner clavier) {
 		int choix;
 		System.out.print("ID : ");
@@ -543,6 +561,12 @@ public class Main {
 		}while(choix != 6);
 	}
 
+	/**
+	 * Vérifie si une formation à l'id idFormS est dans la list formations
+	 * @param formations
+	 * @param idFormS
+	 * @return
+	 */
 	private static boolean containsIDForm(List<Formation> formations, int idFormS) {
 		boolean result = false;
 		for(Formation f : formations){
@@ -552,6 +576,12 @@ public class Main {
 		return result;
 	}
 
+	/**
+	 * Vérifie si un diplome est dans la liste diplomes
+	 * @param diplomes
+	 * @param string
+	 * @return
+	 */
 	private static boolean containsDiplome(List<String> diplomes, String string) {
 		boolean result = false;
 		for(String s : diplomes){
@@ -561,6 +591,10 @@ public class Main {
 		return result;
 	}
 
+	/**
+	 * Fonctionnalité d'ajout d'un établissment
+	 * @param clavier
+	 */
 	private static void ajoutEtablissement(Scanner clavier) {
 		System.out.println("Pour quelle université souhaitez-vous ajouter un établissement ?");
 		System.out.println("Select université : ");
@@ -605,6 +639,10 @@ public class Main {
 		System.out.println("Pour associer des étudiants ou des formations à cet établissement, referez-vous aux fonctions correspondantes.");
 	}
 
+	/**
+	 * Fonction éffectuant la sauvegarde au format XML
+	 * @param universites
+	 */
 	private static void saveToXML(List<Universite> universites) {
 	    Document dom;
 
@@ -800,6 +838,10 @@ public class Main {
 	    }
 	}
 
+	/**
+	 * Fonctionnalité 9 : les cours d'un étudiant
+	 * @param clavier
+	 */
 	private static void coursesOfOneStudent(Scanner clavier) {
 		System.out.println("Vous devez avoir le numero d'un étudiant pour connaitre ces cours ! Si vous ne le connaissez pas nous vous invitons à utiliser la fonction de recherche.");
 		int choix;
@@ -825,17 +867,33 @@ public class Main {
 		}while(choix != 3 && choix != 1);
 	}
 
+	/**
+	 * Affiche toutes les universités
+	 */
 	private static void printAllUniversity() {
 		DAOFactory.getUniversiteDAO().printAll();
 	}
+	
+	/**
+	 * Affiche toutes les formations
+	 */
 
 	private static void printAllFormation() {
 		DAOFactory.getFormationDAO().printAll();		
 	}
+	
+	/**
+	 * Affiche tous les étudiants
+	 */
 
 	private static void printAllStudent() {
 		DAOFactory.getEtudiantDAO().printAll();
 	}
+	
+	/**
+	 * Fonctionnalité de recherche d'un étudiant
+	 * @param clavier
+	 */
 
 	private static void findEtudiant(Scanner clavier) {
 		int choix;
@@ -887,6 +945,11 @@ public class Main {
 		}
 		}while(choix != 5);
 	}
+	
+	/**
+	 * Fonctionnalité de modification d'un étudiant
+	 * @param clavier
+	 */
 
 	private static void modifyEtudiant(Scanner clavier) {
 		int choix;
@@ -936,6 +999,11 @@ public class Main {
 		}
 		}while(choix != 4);
 	}
+	
+	/**
+	 * Fonctionnalité de remplissage de la base mongoDB à d'une liste d'université
+	 * @param u
+	 */
 
 	private static void chargementMongoDB(List<Universite> u) {
 		for(Universite universite : u){
@@ -954,6 +1022,11 @@ public class Main {
 			}
 		}
 	}
+	
+	/**
+	 * Recupère les objects depuis le fichier xml
+	 * @return
+	 */
 
 	private static List<Universite> importationXMLDB() {
 		String filePath = "dbProject.xml";
@@ -979,6 +1052,12 @@ public class Main {
 		}
 	}
 	
+	/**
+	 * Récupération de l'object université
+	 * @param node
+	 * @return
+	 */
+	
 	private static Universite getUniversite(Node node){
 		Universite univ = new Universite();
 		if(node.getNodeType() == Node.ELEMENT_NODE){
@@ -998,6 +1077,13 @@ public class Main {
 		return node.getNodeValue();
 	}
 	
+	/**
+	 * Récupère les objects établissements
+	 * @param tag
+	 * @param element
+	 * @return
+	 */
+	
 	private static List<Etablissement> getEtablissementValue(String tag, Element element){
 		List<Etablissement> listEtablissements = new ArrayList<>();
 		NodeList etablissements = element.getElementsByTagName(tag);
@@ -1015,6 +1101,13 @@ public class Main {
 		}
 		return listEtablissements;
 	}
+	
+	/**
+	 * Récupère les objects formation
+	 * @param tag
+	 * @param element
+	 * @return
+	 */
 
 	private static List<Formation> getFormations(String tag, Element element) {
 		List<Formation> listFormations = new ArrayList<>();
@@ -1037,6 +1130,13 @@ public class Main {
 		}
 		return listFormations;
 	}
+	
+	/**
+	 * Vérifie si la formation avec l'id id est dans la list listFormations
+	 * @param listFormations
+	 * @param id
+	 * @return
+	 */
 
 	private static boolean containsID(List<Formation> listFormations, int id) {
 		for(Formation f : listFormations)
@@ -1044,6 +1144,13 @@ public class Main {
 				return true;
 		return false;
 	}
+	
+	/**
+	 * Vérifie si l'étudiant avec l'id id est dans la list listEtudiants
+	 * @param listEtudiants
+	 * @param id
+	 * @return
+	 */
 
 	private static boolean containsIDEtud(List<Etudiant> listEtudiants, int id){
 		for(Etudiant e : listEtudiants)
@@ -1051,6 +1158,13 @@ public class Main {
 				return true;
 		return false;
 	}
+	
+	/**
+	 * Récupère les objects diplome
+	 * @param tag
+	 * @param element
+	 * @return
+	 */
 	
 	private static List<String> getDiplomes(String tag, Element element) {
 		List<String> listDiplome = new ArrayList<>();
@@ -1061,6 +1175,13 @@ public class Main {
 		}
 		return listDiplome;
 	}
+	
+	/**
+	 * Récupère les objects étudiants
+	 * @param tag
+	 * @param element
+	 * @return
+	 */
 
 	private static List<Etudiant> getEtudiantsValue(String tag, Element element) {
 		List<Etudiant> listEtudiants = new ArrayList<>();
@@ -1078,6 +1199,13 @@ public class Main {
 		}
 		return listEtudiants;
 	}
+	
+	/**
+	 * Récupère l'object formation
+	 * @param tag
+	 * @param etudiant
+	 * @return
+	 */
 
 	private static Formation getFormationValue(String tag, Element etudiant) {
 		Formation f = new Formation();
@@ -1093,6 +1221,13 @@ public class Main {
 		f.setDisciplines(disciplines);
 		return f;
 	}
+	
+	/**
+	 * Récupère l'object adresse
+	 * @param tag
+	 * @param element
+	 * @return
+	 */
 
 	private static Adresse getAdresseValue(String tag, Element element) {
 		Adresse adresse = new Adresse();
@@ -1104,6 +1239,11 @@ public class Main {
 		adresse.setVille(adresses.getElementsByTagName("ville").item(0).getTextContent());
 		return adresse;
 	}
+	
+	/**
+	 * Focntionnalité d'ajout d'un étudiant
+	 * @param clavier
+	 */
 
 	private static void ajoutEtudiant(Scanner clavier) {
 		System.out.println("Let's go create a student !");
@@ -1155,6 +1295,10 @@ public class Main {
 		etab.setEtudiants(le);
 		DAOFactory.getEtablissementDAO().update(etab);
 	}
+	
+	/**
+	 * Affiche du choix principale
+	 */
 
 	public static void printChoix() {
 		System.out.println("Que souhaitez-vous faire ? Au menu :");
