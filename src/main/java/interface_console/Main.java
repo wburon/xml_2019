@@ -145,6 +145,7 @@ public class Main {
 				break;
 			case 7:
 				saveToXML(DAOFactory.getUniversiteDAO().getUniversity());
+				System.out.println("Les informations tel que les étudiants, établissements et formations non lié a une université ne sont pas extraite en xml.");
 				break;
 			case 8:
 				List<Universite> u = importationXMLDB();
@@ -158,6 +159,7 @@ public class Main {
 				try {
 					pageWeb();
 				} catch (TransformerException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				break;
@@ -165,8 +167,8 @@ public class Main {
 				System.out.println("Tu sais pas lire ?");
 			}
 		}
-		// fonction save data à chaque fin de programme TODO
-		System.out.println("DATA SAVE !");
+		// fonction save data à chaque fin de programme
+		System.out.println("Toutes infomations non extraites en xml restent en local sur votre machine !");
 		System.out.println("BYE !");
 
 	}
@@ -178,7 +180,11 @@ public class Main {
 
         Source text = new StreamSource(new File("dbProject.xml"));
         transformer.transform(text, new StreamResult(new File("output.xml")));*/
-
+		
+		TransformerFactory tFactory = TransformerFactory.newInstance();
+		Transformer transformer = tFactory.newTransformer(new StreamSource("transformation.xsl"));
+		transformer.transform(new StreamSource("dbProject.xml"), new StreamResult("etudiant.html"));
+		
 	}
 
 	private static void findFormation(Scanner clavier) {

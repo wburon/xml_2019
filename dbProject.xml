@@ -42,8 +42,8 @@
 					</etudiant>
 					<etudiant>
 						<id>2</id>
-						<nom>baron</nom>
-						<prenom>corentin</prenom>
+						<nom>lavigne</nom>
+						<prenom>pipou</prenom>
 						<adresse>
 							<id>3</id>
 							<numero>4</numero>
@@ -61,6 +61,28 @@
 							</disciplines>
 						</formation>
 						<statut>absent</statut>
+					</etudiant>
+					<etudiant>
+						<id>5</id>
+						<nom>Yaos</nom>
+						<prenom>Nestle</prenom>
+						<adresse>
+							<id>7</id>
+							<numero>6</numero>
+							<voie>rue juin</voie>
+							<codePostal>49000</codePostal>
+							<ville>Angers</ville>
+						</adresse>
+						<formation>
+							<id>1</id>
+							<intitule>MIASHS</intitule>
+							<disciplines>
+								<discipline>maths</discipline>
+								<discipline>stats</discipline>
+								<discipline>opti</discipline>
+							</disciplines>
+						</formation>
+						<statut>present</statut>
 					</etudiant>
 				</etudiants>
 				<diplomes>
