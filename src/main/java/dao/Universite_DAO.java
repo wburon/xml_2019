@@ -84,7 +84,7 @@ public class Universite_DAO extends DAO<Universite>{
 			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("nb_facultes", obj.getNb_facultes()));
 			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("nb_etudiants", obj.getNb_etudiants()));
 			//update etablissements
-			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("formations", obj.getEtablissements()));
+			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("etablissements", obj.getEtablissements()));
 			System.out.println("Universite update succefully !");
 			return true;
 		} catch (Exception e) {

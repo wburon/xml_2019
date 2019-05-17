@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
 import org.bson.Document;
 
 import com.mongodb.BasicDBObject;
@@ -115,7 +117,7 @@ public class Etudiant_DAO extends DAO<Etudiant> {
 				listEtudiant.add(new Etudiant((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("prenom"),
 						(Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
 						(Formation) DAOFactory.getFormationDAO().find((int) doc.get("formation")),
-						(Statut) doc.get("statut")));
+						Statut.valueOf(doc.getString("statut"))));
 			}
 			return listEtudiant;
 		} catch (Exception e) {
@@ -138,7 +140,7 @@ public class Etudiant_DAO extends DAO<Etudiant> {
 							.add(new Etudiant((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("prenom"),
 									(Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
 									(Formation) DAOFactory.getFormationDAO().find((int) doc.get("formation")),
-									(Statut) doc.get("statut")));
+									Statut.getStautByName(doc.getString("statut"))));
 				}
 			}
 			return listEtudiant;
@@ -159,7 +161,7 @@ public class Etudiant_DAO extends DAO<Etudiant> {
 				listEtudiant.add(new Etudiant((int) doc.get("id"), (String) doc.get("nom"), (String) doc.get("prenom"),
 						(Adresse) DAOFactory.getAdresseDAO().find((int) doc.get("adresse")),
 						(Formation) DAOFactory.getFormationDAO().find((int) doc.get("formation")),
-						(Statut) doc.get("statut")));
+						Statut.valueOf(doc.getString("statut"))));
 			}
 			return listEtudiant;
 		} catch (Exception e) {

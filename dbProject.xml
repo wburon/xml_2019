@@ -63,7 +63,9 @@
 						<statut>absent</statut>
 					</etudiant>
 				</etudiants>
-				<diplomes />
+				<diplomes>
+					<diplome>IMA</diplome>
+				</diplomes>
 				<formations>
 					<formation>
 						<id>1</id>
@@ -140,7 +142,9 @@
 						<statut>absent</statut>
 					</etudiant>
 				</etudiants>
-				<diplomes />
+				<diplomes>
+					<diplome>IMA</diplome>
+				</diplomes>
 				<formations>
 					<formation>
 						<id>3</id>

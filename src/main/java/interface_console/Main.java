@@ -200,7 +200,7 @@ public class Main {
 			System.out.print("Intitule : ");
 			String intitule = clavier.next();
 			for(Formation f : DAOFactory.getFormationDAO().findByIntitule(intitule)){
-				f.toString();
+				System.out.println(f.toString());
 			}
 			break;
 		case 3:
@@ -209,10 +209,11 @@ public class Main {
 			List<String> listDisc = new ArrayList<>();
 			for(int i = 0; i < nbDisc; i++){
 				System.out.print(i+ ": ");
+				clavier.nextLine();
 				listDisc.add(clavier.nextLine());
 			}
 			for(Formation f : DAOFactory.getFormationDAO().findByDiscipline(listDisc)){
-				f.toString();
+				System.out.println(f.toString());
 			}
 			break;
 		case 4:
@@ -238,7 +239,7 @@ public class Main {
 			choix = clavier.nextInt();
 			switch(choix){
 			case 1:
-				System.out.print("Nouvel intitule : "); String intitule = clavier.nextLine();
+				System.out.print("Nouvel intitule : "); clavier.nextLine(); String intitule = clavier.nextLine();
 				f.setIntitule(intitule);
 				DAOFactory.getFormationDAO().update(f);
 				break;
@@ -255,14 +256,14 @@ public class Main {
 					secondChoix = clavier.nextInt();
 					switch(secondChoix){
 					case 1:
-						System.out.print("Nom de la nouvelle discipline : "); String newDisc = clavier.nextLine();
+						System.out.print("Nom de la nouvelle discipline : "); clavier.nextLine(); String newDisc = clavier.nextLine();
 						List<String> disciplines = f.getDisciplines();
 						disciplines.add(newDisc);
 						f.setDisciplines(disciplines);
 						DAOFactory.getFormationDAO().update(f);
 						break;
 					case 2:
-						System.out.print("Le nom de la discipline a supprimer : "); String supprDisc = clavier.nextLine();
+						System.out.print("Le nom de la discipline a supprimer : "); clavier.nextLine(); String supprDisc = clavier.nextLine();
 						List<String> discipliness = f.getDisciplines();
 						discipliness.remove(discipliness.indexOf(supprDisc));
 						f.setDisciplines(discipliness);
@@ -295,11 +296,11 @@ public class Main {
 		Etablissement e = DAOFactory.getEtablissementDAO().find(idEtab);
 		List<Formation> listFormations = e.getFormations();
 		System.out.println("Ajoutons maintenant la formation :");
-		System.out.print("Intitule : "); String intitule = clavier.nextLine();
+		System.out.print("Intitule : "); clavier.nextLine(); String intitule = clavier.nextLine();
 		System.out.print("Combien de discipline ? "); int nbDisc = clavier.nextInt();
 		List<String> disciplines = new ArrayList<>();
 		for(int i=0; i<nbDisc; i++){
-			System.out.print(i+" : "); disciplines.add(clavier.nextLine());
+			System.out.print(i+" : "); clavier.nextLine(); disciplines.add(clavier.nextLine());
 		}
 		int idF = DAOFactory.getFormationDAO().create(new Formation(0,intitule,disciplines));
 		listFormations.add(new Formation(idF, intitule, disciplines));
@@ -325,18 +326,20 @@ public class Main {
 			System.out.print("Nom : ");
 			String nom = clavier.next();
 			for(Etablissement e : DAOFactory.getEtablissementDAO().findByName(nom)){
-				e.toString();
+				System.out.println(e.toString());
 			}
 			break;
 		case 3:
 			System.out.print("ville : ");
+			clavier.nextLine();
 			String ville = clavier.nextLine();
 			System.out.print("code postal : ");
 			int code = clavier.nextInt();
 			System.out.print("voie : ");
+			clavier.nextLine();
 			String voie = clavier.nextLine();
 			for(Etablissement e : DAOFactory.getEtablissementDAO().findByLocation(ville,code,voie)){
-				e.toString();
+				System.out.println(e.toString());
 			}
 			break;
 		case 4:
@@ -367,8 +370,10 @@ public class Main {
 		switch(choix){
 		case 1:
 			System.out.print("Nom : ");
+			clavier.nextLine();
 			e.setNom(clavier.nextLine());
 			System.out.print("Type : ");
+			clavier.nextLine();
 			e.setType(clavier.nextLine());
 			DAOFactory.getEtablissementDAO().update(e);
 			break;
@@ -377,10 +382,12 @@ public class Main {
 			System.out.print("Adresse, numero : ");
 			adresse.setNumero(clavier.nextInt());
 			System.out.print("voie : ");
+			clavier.nextLine();
 			adresse.setVoie(clavier.nextLine());
 			System.out.print("code postal : ");
 			adresse.setCode_postal(clavier.nextInt());
 			System.out.print("ville : ");
+			clavier.nextLine();
 			adresse.setVille(clavier.nextLine());
 			e.setAdresse(adresse);
 			DAOFactory.getEtablissementDAO().update(e);
@@ -410,7 +417,7 @@ public class Main {
 			case 2:
 				System.out.println("Quel étudiant supprimons-nous de cet établissement ?");
 				for(Etudiant etud : e.getEtudiants()){
-					etud.toString();
+					System.out.println(etud.toString());
 				}
 				System.out.println("ID : "); int idEtudS = clavier.nextInt();
 				if(containsIDEtud(e.getEtudiants(), idEtudS)){
@@ -455,22 +462,22 @@ public class Main {
 		// Let's create etablissement
 		// int id, String nom, String type, Adresse adresse, List<Etudiant> etudiants,List<String> diplomes, List<Formation> formations
 		System.out.println("Let's create an etablissement !");
-		System.out.print("Nom : "); String name = clavier.nextLine();
-		System.out.print("Type (faculte,institut,..): "); String type = clavier.nextLine();
+		System.out.print("Nom : "); clavier.nextLine(); String name = clavier.nextLine();
+		System.out.print("Type (faculte,institut,..): "); clavier.nextLine(); String type = clavier.nextLine();
 		System.out.println("Adresse,");
 		Adresse adresse = new Adresse();
 		System.out.print("Numéro : "); int numero = clavier.nextInt();
 		adresse.setNumero(numero);
-		System.out.print("Voie : "); String voie = clavier.nextLine();
+		System.out.print("Voie : "); clavier.nextLine(); String voie = clavier.nextLine();
 		adresse.setVoie(voie);
 		System.out.print("Code postal : "); int code = clavier.nextInt();
 		adresse.setCode_postal(code);
-		System.out.print("Ville : "); String ville = clavier.nextLine();
+		System.out.print("Ville : "); clavier.nextLine(); String ville = clavier.nextLine();
 		adresse.setVille(ville);
 		System.out.print("Nombre de diplome : "); int nbDiplome = clavier.nextInt();
 		List<String> diplomes = new ArrayList<>();
 		for(int i = 0; i<nbDiplome ; i++){
-			System.out.print(""+i+" : "); diplomes.add(clavier.nextLine());
+			System.out.print(""+i+" : "); clavier.nextLine(); diplomes.add(clavier.nextLine());
 		}
 		Etablissement etab = new Etablissement();
 		etab.setNom(name);
@@ -741,25 +748,28 @@ public class Main {
 			String nom = clavier.next();
 			System.out.print("Prénom : ");
 			String prenom = clavier.next();
-			for(Etudiant e : DAOFactory.getEtudiantDAO().findByName(nom,prenom)){
-				e.toString();
+			List<Etudiant> listeEtape = DAOFactory.getEtudiantDAO().findByName(nom,prenom);
+			for(Etudiant e : listeEtape){
+				System.out.println(e.toString());
 			}
 			break;
 		case 3:
 			System.out.print("ville : ");
+			clavier.nextLine();
 			String ville = clavier.nextLine();
 			System.out.print("code postal : ");
 			int code = clavier.nextInt();
 			System.out.print("voie : ");
+			clavier.nextLine();
 			String voie = clavier.nextLine();
 			for(Etudiant e : DAOFactory.getEtudiantDAO().findByLocation(ville,code,voie)){
-				e.toString();
+				System.out.println(e.toString());
 			}
 			break;
 		case 4:
 			System.out.print("statut : ");
 			for(Etudiant e : DAOFactory.getEtudiantDAO().findByStatut(clavier.next())){
-				e.toString();
+				System.out.println(e.toString());
 			}
 			break;
 		case 5:
@@ -796,10 +806,12 @@ public class Main {
 			System.out.print("Adresse, numero : ");
 			adresse.setNumero(clavier.nextInt());
 			System.out.print("voie : ");
+			clavier.nextLine();
 			adresse.setVoie(clavier.nextLine());
 			System.out.print("code postal : ");
 			adresse.setCode_postal(clavier.nextInt());
 			System.out.print("ville : ");
+			clavier.nextLine();
 			adresse.setVille(clavier.nextLine());
 			e.setAdresse(adresse);
 			DAOFactory.getEtudiantDAO().update(e);
@@ -933,7 +945,7 @@ public class Main {
 	
 	private static List<String> getDiplomes(String tag, Element element) {
 		List<String> listDiplome = new ArrayList<>();
-		NodeList nd = element.getElementsByTagName("tag");
+		NodeList nd = element.getElementsByTagName(tag);
 		for(int m=0; m<nd.getLength(); m++){
 			Element e = (Element) nd.item(m);
 			listDiplome.add(e.getTextContent());
@@ -995,11 +1007,11 @@ public class Main {
 		Adresse adresse = new Adresse();
 		System.out.print("Numéro : "); int numero = clavier.nextInt();
 		adresse.setNumero(numero);
-		System.out.print("Voie : "); String voie = clavier.nextLine();
+		System.out.print("Voie : "); clavier.nextLine(); String voie = clavier.nextLine();
 		adresse.setVoie(voie);
 		System.out.print("Code postal : "); int code = clavier.nextInt();
 		adresse.setCode_postal(code);
-		System.out.print("Ville : "); String ville = clavier.nextLine();
+		System.out.print("Ville : "); clavier.nextLine(); String ville = clavier.nextLine();
 		adresse.setVille(ville);
 		etudiant.setAdresse(adresse);
 		System.out.println("Select université : ");
@@ -1020,7 +1032,7 @@ public class Main {
 		etudiant.setFormation(formation);
 		System.out.println("Inscrit : ");
 		etudiant.setStatut(Statut.getStatut(clavier));
-		DAOFactory.getEtudiantDAO().create(etudiant);
+		int idNewEtud = DAOFactory.getEtudiantDAO().create(etudiant);
 		
 		// incremente nb_etudiant in université
 		Universite univ = (DAOFactory.getUniversiteDAO().find(idUniv));
@@ -1030,7 +1042,7 @@ public class Main {
 		// add student to etablissement
 		Etablissement etab = DAOFactory.getEtablissementDAO().find(idEtab);
 		List<Etudiant> le = etab.getEtudiants();
-		le.add(DAOFactory.getEtudiantDAO().find(DAOFactory.getEtudiantDAO().create(etudiant)));
+		le.add(DAOFactory.getEtudiantDAO().find(idNewEtud));
 		etab.setEtudiants(le);
 		DAOFactory.getEtablissementDAO().update(etab);
 	}
@@ -1045,7 +1057,7 @@ public class Main {
 		System.out.println("6- Lister l'ensemble des universités");
 		System.out.println("7- Extraire data sous format XML");
 		System.out.println("8- Importation data depuis XML file");
-		System.out.println("9- Lister les cours d'un étudiant ... (a voir)");
+		System.out.println("9- Lister les cours d'un étudiant");
 		System.out.println("10- Quitter");
 		System.out.println("-----------------------------------------------");
 	}
