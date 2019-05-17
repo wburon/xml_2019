@@ -362,8 +362,8 @@ public class Main {
 		System.out.println("Que souhaitez-vous modifier ?");
 		System.out.println("1- Nom/Type");
 		System.out.println("2- Adresse");
-		System.out.println("3- Etudiants");
-		System.out.println("4- Diplomes");
+		System.out.println("3- Diplomes");
+		System.out.println("4- Etudiants");
 		System.out.println("5- Formations");
 		System.out.println("6- Annuler");
 		choix = clavier.nextInt();
@@ -373,7 +373,6 @@ public class Main {
 			clavier.nextLine();
 			e.setNom(clavier.nextLine());
 			System.out.print("Type : ");
-			clavier.nextLine();
 			e.setType(clavier.nextLine());
 			DAOFactory.getEtablissementDAO().update(e);
 			break;
@@ -395,12 +394,56 @@ public class Main {
 		case 3:
 			int secondChoix;
 			do{
+			System.out.println("A propos des diplomes :");
+			System.out.println("1- Affectation d'un diplome");
+			System.out.println("2- Suppression d'un diplome");
+			System.out.println("3- Annuler");
+			secondChoix = clavier.nextInt();
+			switch(secondChoix){
+			case 1:
+				System.out.println("Quel diplome affectons-nous à cet établissement ?");
+				System.out.println("Diplome : "); clavier.nextLine(); String idDipl = clavier.nextLine();
+				if(containsDiplome(e.getDiplomes(), idDipl)){
+					System.out.println("Ce diplome est déjà affecter a cet établissement !");
+				}else {
+					List<String> ls = e.getDiplomes();
+					ls.add(idDipl);
+					e.setDiplomes(ls);
+					DAOFactory.getEtablissementDAO().update(e);
+				}
+				break;
+			case 2:
+				System.out.println("Quel diplome supprimons-nous de cet établissement ?");
+				int num = 0;
+				for(String s : e.getDiplomes()){
+					System.out.println(num + " : " + s);
+					num++;
+				}
+				System.out.println("Diplome : "); int idDiplS = clavier.nextInt();
+				if(containsDiplome(e.getDiplomes(), e.getDiplomes().get(idDiplS))){
+					List<String> ls = e.getDiplomes();
+					ls.remove(idDiplS);
+					e.setDiplomes(ls);
+					DAOFactory.getEtablissementDAO().update(e);
+				}else{
+					System.out.println("Ce diplome n'existe pas");
+				}
+				break;
+			case 3:
+				break;
+			default:
+			}
+			} while(secondChoix != 3);
+			break;
+		case 4:
+			int secondChoixEtud;
+			do{
 			System.out.println("A propos des étudiants :");
 			System.out.println("1- Affectation d'un étudiant");
 			System.out.println("2- Suppression d'un étudiant");
 			System.out.println("3- Annuler");
-			secondChoix = clavier.nextInt();
-			switch(secondChoix){
+			secondChoixEtud = clavier.nextInt();
+			switch(secondChoixEtud){
 			case 1:
 				System.out.println("Quel étudiant affectons-nous à cet établissement ?");
 				DAOFactory.getEtudiantDAO().printAll();
@@ -437,13 +480,54 @@ public class Main {
 				break;
 			default:
 			}
-			} while(secondChoix != 3);
-			break;
-		case 4:
-			//TODO
+			} while(secondChoixEtud != 3);
 			break;
 		case 5:
-			//TODO
+			int secondChoixForm;
+			do{
+			System.out.println("A propos des formations :");
+			System.out.println("1- Affectation d'une formation");
+			System.out.println("2- Suppression d'une formation");
+			System.out.println("3- Annuler");
+			secondChoixForm = clavier.nextInt();
+			switch(secondChoixForm){
+			case 1:
+				System.out.println("Quelle formation affectons-nous à cet établissement ?");
+				DAOFactory.getFormationDAO().printAll();
+				System.out.println("ID : "); int idForm = clavier.nextInt();
+				if(containsIDForm(e.getFormations(), idForm)){
+					System.out.println("Cette formation est déjà affecter a cet établissement !");
+				}else {
+					List<Formation> lf = e.getFormations();
+					lf.add(DAOFactory.getFormationDAO().find(idForm));
+					e.setFormations(lf);
+					DAOFactory.getEtablissementDAO().update(e);
+				}
+				break;
+			case 2:
+				System.out.println("Quelle formation supprimons-nous de cet établissement ?");
+				for(Formation form : e.getFormations()){
+					System.out.println(form.toString());
+				}
+				System.out.println("ID : "); int idFormS = clavier.nextInt();
+				if(containsIDForm(e.getFormations(), idFormS)){
+					List<Formation> lf = e.getFormations();
+					for(int i=0; i<lf.size(); i++){
+						Formation formi = lf.get(i);
+						if(formi.getId() == idFormS)
+							lf.remove(i);
+					}
+					e.setFormations(lf);
+					DAOFactory.getEtablissementDAO().update(e);
+				}else{
+					System.out.println("Cette formation n'existe pas");
+				}
+				break;
+			case 3:
+				break;
+			default:
+			}
+			} while(secondChoixForm != 3);
 			break;
 		case 6:
 			System.out.println("-----------------------------------------------");
@@ -451,6 +535,24 @@ public class Main {
 		default:	
 		}
 		}while(choix != 6);
+	}
+
+	private static boolean containsIDForm(List<Formation> formations, int idFormS) {
+		boolean result = false;
+		for(Formation f : formations){
+			if(f.getId() == idFormS)
+				result = true;
+		}
+		return result;
+	}
+
+	private static boolean containsDiplome(List<String> diplomes, String string) {
+		boolean result = false;
+		for(String s : diplomes){
+			if(s.equals(string))
+				result = true;
+		}
+		return result;
 	}
 
 	private static void ajoutEtablissement(Scanner clavier) {
@@ -463,7 +565,7 @@ public class Main {
 		// int id, String nom, String type, Adresse adresse, List<Etudiant> etudiants,List<String> diplomes, List<Formation> formations
 		System.out.println("Let's create an etablissement !");
 		System.out.print("Nom : "); clavier.nextLine(); String name = clavier.nextLine();
-		System.out.print("Type (faculte,institut,..): "); clavier.nextLine(); String type = clavier.nextLine();
+		System.out.print("Type (faculte,institut,..): "); String type = clavier.nextLine();
 		System.out.println("Adresse,");
 		Adresse adresse = new Adresse();
 		System.out.print("Numéro : "); int numero = clavier.nextInt();
@@ -476,8 +578,9 @@ public class Main {
 		adresse.setVille(ville);
 		System.out.print("Nombre de diplome : "); int nbDiplome = clavier.nextInt();
 		List<String> diplomes = new ArrayList<>();
+		clavier.nextLine();
 		for(int i = 0; i<nbDiplome ; i++){
-			System.out.print(""+i+" : "); clavier.nextLine(); diplomes.add(clavier.nextLine());
+			System.out.print(""+i+" : ");  diplomes.add(clavier.nextLine());
 		}
 		Etablissement etab = new Etablissement();
 		etab.setNom(name);

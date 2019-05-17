@@ -92,11 +92,34 @@ public class Etablissement_DAO extends DAO<Etablissement>{
 			//update adresse
 			DAOFactory.getAdresseDAO().update(obj.getAdresse());
 			//update etudiants
-			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("etudiants", obj.getEtudiants()));
+			List<Integer> idEtudiants = new ArrayList<>();
+			for(Etudiant e : obj.getEtudiants()){
+				idEtudiants.add(e.getId());
+			}
+			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("etudiants", idEtudiants));
 			//update diplomes
 			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("diplomes", obj.getDiplomes()));
 			//update formations
-			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("formations", obj.getFormations()));
+			List<Integer> idFormations = new ArrayList<>();
+			for(Formation f : obj.getFormations()){
+				idFormations.add(f.getId());
+			}
+			collection.updateOne(Filters.eq("id", obj.getId()), Updates.set("formations", idFormations));
+			// update nbOf faculte of université
+			for(Universite univ : DAOFactory.getUniversiteDAO().getUniversity()){
+				for(Etablissement etab : univ.getEtablissements()){
+					if(etab.getId() == obj.getId()){
+						if(etab.getType().equals("faculte") && !obj.getType().equals("faculte")){
+							univ.setNb_facultes(univ.getNb_facultes()-1);
+							DAOFactory.getUniversiteDAO().update(univ);
+						}
+						else if(!etab.getType().equals("faculte") && obj.getType().equals("faculte")){
+							univ.setNb_facultes(univ.getNb_facultes()+1);
+							DAOFactory.getUniversiteDAO().update(univ);
+						}
+					}
+				}
+			}
 			System.out.println("etablissement update succefully !");
 			return true;
 		} catch (Exception e) {
